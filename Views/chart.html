@@ -1,0 +1,27 @@
+<!-- 图表分析区域 -->
+<section class="chart-section" id="chart-container">
+  <div class="chart-header">
+    <h2>图表分析</h2>
+    <div class="chart-controls">
+      <select id="chart-timeframe">
+        <option value="1d">1天</option>
+        <option value="1w">1周</option>
+        <option value="1m">1月</option>
+        <option value="3m">3月</option>
+        <option value="1y">1年</option>
+        <option value="5y">5年</option>
+      </select>
+      <div class="chart-indicators">
+        <button class="indicator-btn active">价格</button>
+        <button class="indicator-btn">成交量</button>
+        <button class="indicator-btn">MA</button>
+        <button class="indicator-btn">RSI</button>
+      </div>
+    </div>
+  </div>
+  <div class="chart-placeholder">
+    <p>请从左侧选择产品查看详细图表</p>
+  </div>
+</section>
+
+<script src="../Models/chart.js"></script>
