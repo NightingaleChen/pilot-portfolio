@@ -1,5 +1,13 @@
 // 等待所有组件加载完成后再初始化
 document.addEventListener('DOMContentLoaded', () => {
+  // 首先检查登录状态
+  const userData = localStorage.getItem('userData');
+  if (!userData) {
+    // 未登录，不需要等待组件加载
+    return;
+  }
+  
+  // 已登录，等待组件加载
   // 检查所有组件是否已加载
   const checkComponentsLoaded = setInterval(() => {
     const collectionLoaded = document.querySelector('#collection-list');
@@ -17,6 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(checkComponentsLoaded);
     initializeApp();
   }, 5000);
+});
+
+// 添加组件加载完成的事件监听器
+document.addEventListener('componentsLoaded', () => {
+  initializeApp();
 });
 
 // 初始化应用
@@ -550,3 +563,8 @@ function drawKLineChart(productId) {
     });
   }
 };
+
+// 在 initializeApp 函数内部添加
+function closeProductModal() {
+  productModal.style.display = 'none';
+}
