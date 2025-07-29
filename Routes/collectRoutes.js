@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { AddCollect, GetCollect, DeleteCollect } = require('../Controllers/collect.js');
+const { AddCollect, GetCollect, DeleteCollect, GetAllStocks } = require('../Controllers/collect.js');
 
 // 添加收藏
 router.post('/add', AddCollect);
@@ -10,5 +10,8 @@ router.get('/get', GetCollect);
 
 // 删除收藏
 router.delete('/delete', DeleteCollect);
+
+// 获取所有可用的股票列表
+router.get('/stocks', GetAllStocks);
 
 module.exports = router;

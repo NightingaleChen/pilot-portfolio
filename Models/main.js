@@ -463,12 +463,12 @@ function drawKLineChart(productId) {
   }
   
   // 添加收藏按钮点击事件
-  const addCollectionBtn = document.getElementById('add-collection');
-  if (addCollectionBtn) {
-    addCollectionBtn.addEventListener('click', () => {
-      alert('添加收藏功能即将上线！');
-    });
-  }
+  // const addCollectionBtn = document.getElementById('add-collection');
+  // if (addCollectionBtn) {
+  //   addCollectionBtn.addEventListener('click', () => {
+  //     alert('添加收藏功能即将上线！');
+  //   });
+  // }
   
   // 刷新投资组合按钮点击事件
   const refreshPortfolioBtn = document.getElementById('refresh-portfolio');
