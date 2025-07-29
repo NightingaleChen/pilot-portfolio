@@ -11,6 +11,42 @@ const conn = mysql.createConnection({
 // 创建游标
 const cursor = conn.promise();
 
+// 获取所有可用的股票列表
+async function GetAllStocks(req, res) {
+    try {
+        const { user_id } = req.query;
+        
+        // 验证user_id参数
+        if (!user_id) {
+            return res.status(400).json({ error: 'user_id parameter is required' });
+        }
+        
+        // 获取所有不重复的股票源
+        const getAllStocksSql = 'SELECT DISTINCT source FROM stocks WHERE source IS NOT NULL';
+        const [allStocks] = await cursor.execute(getAllStocksSql);
+        
+        // 获取该用户已收藏的股票
+        const getUserCollectionsSql = 'SELECT DISTINCT stock_name FROM collections WHERE user_id = ?';
+        const [userCollections] = await cursor.execute(getUserCollectionsSql, [user_id]);
+        
+        // 提取用户已收藏的股票名称
+        const collectedStockNames = userCollections.map(row => row.stock_name);
+        
+        // 过滤掉用户已收藏的股票
+        const availableStocks = allStocks
+            .map(row => row.source)
+            .filter(source => !collectedStockNames.includes(source))
+            .map(source => ({
+                name: source,
+                displayName: source.charAt(0).toUpperCase() + source.slice(1) // 首字母大写
+            }));
+        
+        res.json({ stocks: availableStocks });
+    } catch (err) {
+        console.error('Error getting all stocks:', err);
+        res.status(500).send('Error getting stocks: ' + err.message);
+    }
+}
 
 function AddCollect(req, res) {
     const { user_id, stock_name } = req.body;
@@ -59,5 +95,6 @@ function DeleteCollect(req, res) {
 module.exports = {
     AddCollect,
     GetCollect,
-    DeleteCollect
+    DeleteCollect,
+    GetAllStocks
 };
