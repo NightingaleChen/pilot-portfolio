@@ -32,33 +32,67 @@ const ComponentLoader = (() => {
       .then(() => {
         // 触发组件加载完成事件
         document.dispatchEvent(new CustomEvent('componentsLoaded'));
+        console.log('所有组件加载完成');
       })
       .catch(error => {
         console.error('加载组件时出错:', error);
+        // 尝试重新加载失败的组件
+        setTimeout(() => {
+          console.log('尝试重新加载组件...');
+          loadAllComponents();
+        }, 2000);
       });
   }
 
   // 加载单个组件
   function loadComponent(component) {
     return new Promise((resolve, reject) => {
+      // 检查容器是否存在
+      const container = document.getElementById(component.container);
+      if (!container) {
+        console.error(`找不到容器: ${component.container}`);
+        return reject(new Error(`找不到容器: ${component.container}`));
+      }
+      
+      // 添加加载状态指示
+      container.innerHTML = '<div class="loading-component">加载中...</div>';
+      
       fetch(component.htmlPath)
-        .then(response => response.text())
-        .then(html => {
-          const container = document.getElementById(component.container);
-          if (container) {
-            container.innerHTML = html;
-            
-            // 动态加载JS
-            const script = document.createElement('script');
-            script.src = component.jsPath;
-            script.onload = () => resolve();
-            script.onerror = () => reject(new Error(`无法加载脚本: ${component.jsPath}`));
-            document.body.appendChild(script);
-          } else {
-            reject(new Error(`找不到容器: ${component.container}`));
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP错误! 状态: ${response.status}`);
           }
+          return response.text();
+        })
+        .then(html => {
+          container.innerHTML = html;
+          
+          // 检查是否已经加载过此JS
+          const scriptId = `script-${component.container}`;
+          let script = document.getElementById(scriptId);
+          
+          if (script) {
+            // 如果已存在，则移除旧脚本
+            script.parentNode.removeChild(script);
+          }
+          
+          // 动态加载JS
+          script = document.createElement('script');
+          script.id = scriptId;
+          script.src = component.jsPath;
+          script.onload = () => {
+            console.log(`组件 ${component.container} 加载完成`);
+            resolve();
+          };
+          script.onerror = (e) => {
+            console.error(`无法加载脚本: ${component.jsPath}`, e);
+            reject(new Error(`无法加载脚本: ${component.jsPath}`));
+          };
+          document.body.appendChild(script);
         })
         .catch(error => {
+          console.error(`加载组件 ${component.htmlPath} 失败:`, error);
+          container.innerHTML = `<div class="error-component">加载失败: ${error.message}</div>`;
           reject(error);
         });
     });

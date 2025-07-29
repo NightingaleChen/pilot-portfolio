@@ -87,15 +87,21 @@
         <div class="user-menu">
         <!-- 用户信息区域 -->
         <div class="user-info">
-        <div class="user-balance">
-        <div class="balance-item">
-        <span class="balance-label">余额:</span>
-        <span class="balance-value" id="user-balance">$0.00</span>
-        </div>
-        <div class="balance-item">
-        <span class="balance-label">总资产:</span>
-        <span class="balance-value" id="user-total-assets">$0.00</span>
-        </div>
+          <div class="user-balance">
+            <button id="assets-button" class="assets-button">
+              <div class="balance-item">
+                <span class="balance-label">余额:</span>
+                <span class="balance-value" id="user-balance">$0.00</span>
+              </div>
+              <div class="balance-item">
+                <span class="balance-label">总资产:</span>
+                <span class="balance-value" id="user-total-assets">$0.00</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="user-profile">
         <span class="user-name" id="user-name">未登录</span>
@@ -190,11 +196,43 @@
     </div>
   </div>
   
+  <!-- 资产饼图浮窗 -->
+  <div id="assets-chart-overlay" class="assets-chart-overlay">
+    <div class="assets-chart-container">
+      <div class="assets-chart-header">
+        <h3>资产分布</h3>
+        <button class="close-assets-chart-btn">&times;</button>
+      </div>
+      <div class="assets-chart-content">
+        <div class="pie-chart-container">
+          <canvas id="assets-pie-chart"></canvas>
+        </div>
+        <div class="assets-details">
+          <div class="assets-summary">
+            <div class="summary-item">
+              <span class="summary-label">总资产:</span>
+              <span class="summary-value" id="summary-total-assets">$0.00</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">现金余额:</span>
+              <span class="summary-value" id="summary-balance">$0.00</span>
+            </div>
+          </div>
+          <div class="assets-list" id="assets-list">
+            <!-- 资产列表将通过JavaScript动态生成 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- 引入JavaScript文件 -->
   <script src="/Models/common.js"></script>
   <script src="/Models/componentLoader.js"></script>
   <script src="/Models/main.js"></script>
   <script src="/Models/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/Models/assetsChart.js"></script>
   <script src="/Models/auth.js"></script>
   <script src="/Models/collection.js"></script>
 </body>

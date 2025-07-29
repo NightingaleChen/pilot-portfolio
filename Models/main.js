@@ -520,12 +520,18 @@ function drawKLineChart(productId) {
     searchProducts(searchInput.value);
   });
   
-  // 初始化今日推荐卡片 - 将来从后端API获取推荐数据
+  // 初始化今日推荐卡片
   initTodaysPicks();
   
   // 初始化今日推荐卡片
+  // 初始化今日推荐卡片
   function initTodaysPicks() {
     const container = document.getElementById('todays-picks');
+    // 检查元素是否存在
+    if (!container) {
+      console.error('找不到todays-picks元素');
+      return;
+    }
     container.innerHTML = '';
     
     // 按涨幅降序排序
