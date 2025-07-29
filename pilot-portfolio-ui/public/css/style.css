@@ -135,21 +135,136 @@ button {
   align-items: center;
 }
 
+/* 修改收藏按钮样式 */
 .priority-btn {
-  color: var(--text-light);
-  font-size: 1rem;
-  padding: 5px;
-  border-radius: 50%;
+  background: none;
+  border: none;
+  color: var(--medium-gray);
+  cursor: pointer;
+  font-size: 1.2rem;
   transition: all var(--transition-speed);
-}
-
-.priority-btn:hover {
-  color: var(--primary-color);
-  transform: scale(1.2);
+  padding: 0;
+  margin-left: 5px;
 }
 
 .priority-btn.active {
   color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* 修改仪表盘布局 */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* 修改投资组合部分样式，使其延伸到页面最右端 */
+.portfolio-section {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.portfolio-header-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-right: 20px;
+}
+
+.portfolio-header-section h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.portfolio-item {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  cursor: pointer;
+}
+
+.portfolio-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* 添加新项目的样式 */
+.add-new-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(212, 175, 55, 0.1);
+  border: 2px dashed var(--primary-color);
+  min-height: 120px;
+}
+
+.add-icon {
+  font-size: 36px;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.add-text {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.add-new-item:hover {
+  background-color: rgba(212, 175, 55, 0.2);
+}
+
+/* 删除今日推荐部分 */
+.daily-recommendations {
+  display: none;
+}
+
+/* 扩展图表区域 */
+.chart-section {
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  margin-top: 0;
+  height: calc(100vh - 250px);
+  min-height: 400px;
+}
+
+.k-line-chart {
+  height: calc(100% - 60px) !important;
+  min-height: 300px;
+}
+
+/* 修改用户菜单布局 */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 修改图表占位符 */
+.chart-placeholder {
+  height: calc(100% - 60px);
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-color-light);
+  border-radius: var(--border-radius-md);
+  color: var(--text-light);
 }
 
 .sidebar-footer {
@@ -173,8 +288,8 @@ button {
 .main-content {
   flex: 1;
   margin-left: 260px;
-  padding: 20px;
-  background-color: var(--off-white);
+  padding: 10px; /* 从20px减小到10px */
+  background-color: var(--black);
 }
 
 .main-header {
@@ -184,6 +299,135 @@ button {
   margin-bottom: 30px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--medium-gray);
+}
+
+/* 内容容器 */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 从30px减小到15px */
+}
+
+/* 修改投资组合部分样式，使其占据页面右侧三分之二 */
+.user-portfolio {
+  width: 100%;
+  background-color: var(--dark-gray);
+  border-radius: var(--border-radius-lg);
+  padding: 15px; /* 从20px减小到15px */
+  box-shadow: var(--shadow-md);
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.portfolio-item {
+  background-color: var(--medium-gray);
+  border-radius: var(--border-radius-md);
+  padding: 15px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  cursor: pointer;
+}
+
+.portfolio-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 添加新项目的样式 */
+.add-new-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(212, 175, 55, 0.1);
+  border: 2px dashed var(--primary-color);
+  min-height: 120px;
+}
+
+.add-icon {
+  font-size: 36px;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.add-text {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.add-new-item:hover {
+  background-color: rgba(212, 175, 55, 0.2);
+}
+
+/* 图表区域样式 */
+.chart-section {
+  width: 100%;
+  background-color: var(--dark-gray);
+  border-radius: var(--border-radius-lg);
+  padding: 15px; /* 从20px减小到15px */
+  box-shadow: var(--shadow-md);
+  height: calc(100vh - 420px); /* 调整高度使页面更紧凑 */
+  min-height: 280px; /* 从300px减小到280px */
+}
+
+/* 侧边栏导航样式 */
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.nav-section {
+  margin-bottom: 30px;
+  padding: 0 20px;
+}
+
+.nav-section h3 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+/* 收藏按钮样式 */
+.priority-btn {
+  background: none;
+  border: none;
+  color: var(--medium-gray);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all var(--transition-speed);
+  padding: 0;
+  margin-left: 5px;
+}
+
+.priority-btn.active {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* 推荐列表样式 */
+#todays-picks-list li {
+  margin-bottom: 8px;
+}
+
+#todays-picks-list li a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-md);
+  background-color: var(--medium-gray);
+  transition: all var(--transition-speed);
+}
+
+#todays-picks-list li a:hover {
+  background-color: var(--light-gray);
+  transform: translateX(5px);
 }
 
 .search-bar {

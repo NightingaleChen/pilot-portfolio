@@ -1,20 +1,41 @@
-// 等待DOM加载完成
+// 等待所有组件加载完成后再初始化
 document.addEventListener('DOMContentLoaded', () => {
+  // 检查所有组件是否已加载
+  const checkComponentsLoaded = setInterval(() => {
+    const collectionLoaded = document.querySelector('#collection-list');
+    const recommendationLoaded = document.querySelector('#todays-picks-list');
+    const portfolioLoaded = document.querySelector('.portfolio-grid');
+    
+    if (collectionLoaded && recommendationLoaded && portfolioLoaded) {
+      clearInterval(checkComponentsLoaded);
+      initializeApp();
+    }
+  }, 100);
+  
+  // 如果5秒后组件仍未加载完成，也初始化应用
+  setTimeout(() => {
+    clearInterval(checkComponentsLoaded);
+    initializeApp();
+  }, 5000);
+});
+
+// 初始化应用
+function initializeApp() {
   // 获取DOM元素
-  const productCards = document.querySelectorAll('.product-card');
-  const portfolioItems = document.querySelectorAll('.portfolio-item');
+  const collectionList = document.getElementById('collection-list');
   const collectionItems = document.querySelectorAll('#collection-list li');
   const priorityButtons = document.querySelectorAll('.priority-btn');
-  const productModal = document.getElementById('product-modal');
-  const closeModalBtn = document.querySelector('.close-modal-btn');
+  const languageSwitch = document.getElementById('language-switch');
   const chartContainer = document.getElementById('chart-container');
   const searchInput = document.getElementById('product-search');
-  const languageSwitch = document.getElementById('language-switch');
-  const collectionList = document.getElementById('collection-list');
+  const productModal = document.getElementById('product-modal');
+  const closeModalBtn = document.querySelector('.close-modal-btn');
+  const portfolioItems = document.querySelectorAll('.portfolio-item');
   
-  // 语言数据
+  // 多语言翻译数据
   const translations = {
-    zh: {
+    'zh-CN': {
+      shares: '持有',
       search: "搜索产品名称...",
       collection: "收藏",
       recommendations: "今日推荐",
@@ -38,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
       sell: "卖出",
       addToCollection: "添加到收藏"
     },
-    en: {
+    'en-US': {
+      shares: 'Shares',
       search: "Search products...",
       collection: "Collection",
       recommendations: "Today's Picks",
@@ -65,9 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   // 当前语言
-  let currentLang = 'zh';
+  let currentLang = 'zh-CN';
   
-  // 模拟数据
+  // 模拟产品数据 - 将来从后端API获取
   const productData = {
     1: {
       name: {
@@ -205,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 更新产品名称
   function updateProductNames() {
-    // 更新收藏列表
+    // 更新收藏列表 - 将来从后端API获取数据
     const collectionItems = document.querySelectorAll('#collection-list li a');
     collectionItems.forEach(item => {
       const id = item.dataset.id;
@@ -214,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     
-    // 更新今日推荐列表
+    // 更新今日推荐列表 - 将来从后端API获取数据
     const recommendationItems = document.querySelectorAll('#todays-picks-list li a');
     recommendationItems.forEach(item => {
       const id = item.dataset.id;
@@ -224,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     
-    // 更新投资组合项
+    // 更新投资组合项 - 将来从后端API获取数据
     const portfolioItems = document.querySelectorAll('.portfolio-item h3');
     portfolioItems.forEach(item => {
       const id = item.closest('.portfolio-item').dataset.id;
@@ -241,67 +263,88 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // 设置优先级并重新排序
+  // 设置优先级并重新排序 - 将来与后端API交互保存优先级设置
   function togglePriority(button, listItem) {
-    button.classList.toggle('active');
-    
-    // 如果按钮被激活，将项目移到列表顶部
-    if (button.classList.contains('active')) {
-      collectionList.prepend(listItem);
-    } else {
-      // 如果取消激活，将项目移到所有激活项目之后
-      const activeItems = collectionList.querySelectorAll('li .priority-btn.active');
-      if (activeItems.length > 0) {
-        const lastActiveItem = activeItems[activeItems.length - 1].closest('li');
-        lastActiveItem.after(listItem);
-      }
-    }
+  // 如果按钮已经激活，则取消激活
+  if (button.classList.contains('active')) {
+    button.classList.remove('active');
+    button.innerHTML = '★'; // 空心星星
+    // 将项目移到列表底部
+    collectionList.appendChild(listItem);
+  } else {
+    // 激活按钮
+    button.classList.add('active');
+    button.innerHTML = '★'; // 实心星星（通过CSS控制颜色）
+    // 将项目移到列表顶部
+    collectionList.prepend(listItem);
+  }
+}
+
+// 修改绘制K线图函数 - 将来从后端API获取图表数据
+function drawKLineChart(productId) {
+  const product = productData[productId];
+  if (!product || !product.kLineData) return;
+  
+  // 清空图表容器
+  const chartContent = chartContainer.querySelector('.chart-content');
+  if (chartContent) {
+    chartContent.remove();
   }
   
-  // 绘制K线图
-  function drawKLineChart(productId) {
-    const product = productData[productId];
-    if (!product || !product.kLineData) return;
-    
-    // 移除占位符
-    const placeholder = chartContainer.querySelector('.chart-placeholder');
-    if (placeholder) {
-      placeholder.remove();
-    }
-    
-    // 创建图表标题
-    const chartTitle = document.createElement('h3');
-    chartTitle.textContent = `${product.name[currentLang]} 价格走势`;
-    
-    // 创建K线图容器
-    const chartElement = document.createElement('div');
-    chartElement.classList.add('k-line-chart');
-    chartElement.style.height = '300px';
-    chartElement.style.backgroundColor = '#1E1E1E';
-    chartElement.style.borderRadius = '8px';
-    chartElement.style.padding = '15px';
-    
-    // 创建SVG元素
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('height', '100%');
-    svg.setAttribute('viewBox', '0 0 1000 300');
-    
-    // 绘制K线
-    const kLineData = product.kLineData;
-    const svgContent = drawKLines(kLineData);
-    svg.innerHTML = svgContent;
-    
-    chartElement.appendChild(svg);
-    
-    // 清空并添加新内容
-    const chartContent = document.createElement('div');
-    chartContent.appendChild(chartTitle);
-    chartContent.appendChild(chartElement);
-    
-    // 添加到图表容器
-    chartContainer.querySelector('.chart-header').after(chartContent);
+  // 移除占位符
+  const placeholder = chartContainer.querySelector('.chart-placeholder');
+  if (placeholder) {
+    placeholder.remove();
   }
+  
+  // 创建图表内容容器
+  const newChartContent = document.createElement('div');
+  newChartContent.classList.add('chart-content');
+  
+  // 创建图表标题
+  const chartTitle = document.createElement('h3');
+  chartTitle.textContent = `${product.name[currentLang]} 价格走势`;
+  chartTitle.style.marginBottom = '15px';
+  chartTitle.style.color = 'var(--primary-color)';
+  
+  // 创建K线图容器
+  const chartElement = document.createElement('div');
+  chartElement.classList.add('k-line-chart');
+  chartElement.style.height = 'calc(100% - 30px)';
+  chartElement.style.minHeight = '300px';
+  chartElement.style.backgroundColor = '#1E1E1E';
+  chartElement.style.borderRadius = '8px';
+  chartElement.style.padding = '15px';
+  
+  // 创建SVG元素
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', '100%');
+  svg.setAttribute('height', '100%');
+  svg.setAttribute('viewBox', '0 0 1000 300');
+  
+  // 绘制K线
+  const kLineData = product.kLineData;
+  const svgContent = drawKLines(kLineData);
+  svg.innerHTML = svgContent;
+  
+  chartElement.appendChild(svg);
+  
+  // 添加到图表内容容器
+  newChartContent.appendChild(chartTitle);
+  newChartContent.appendChild(chartElement);
+  
+  // 添加到图表容器
+  chartContainer.querySelector('.chart-header').after(newChartContent);
+  
+  // 高亮当前选中的产品
+  document.querySelectorAll('#collection-list li a').forEach(item => {
+    if (item.dataset.id === productId) {
+      item.parentElement.classList.add('active');
+    } else {
+      item.parentElement.classList.remove('active');
+    }
+  });
+}
   
   // 绘制K线
   function drawKLines(data) {
@@ -397,7 +440,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // 语言切换按钮
   languageSwitch.addEventListener('click', switchLanguage);
   
-  // 点击收藏项目
+  // 添加新项目按钮点击事件 - 将来与后端API交互添加新项目
+  const addNewItemButton = document.querySelector('.add-new-item');
+  if (addNewItemButton) {
+    addNewItemButton.addEventListener('click', () => {
+      // 这里可以添加打开添加新项目表单或对话框的逻辑
+      alert('添加新项目功能即将上线！');
+    });
+  }
+  
+  // 添加收藏按钮点击事件
+  const addCollectionBtn = document.getElementById('add-collection');
+  if (addCollectionBtn) {
+    addCollectionBtn.addEventListener('click', () => {
+      alert('添加收藏功能即将上线！');
+    });
+  }
+  
+  // 刷新投资组合按钮点击事件
+  const refreshPortfolioBtn = document.getElementById('refresh-portfolio');
+  if (refreshPortfolioBtn) {
+    refreshPortfolioBtn.addEventListener('click', () => {
+      alert('刷新投资组合功能即将上线！');
+    });
+  }
+  
+  // 点击收藏项目 - 将来从后端API获取详细数据
   collectionItems.forEach(item => {
     item.addEventListener('click', (e) => {
       if (e.target.tagName !== 'BUTTON') {
@@ -407,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-  // 点击今日推荐项目
+  // 点击推荐项目 - 将来从后端API获取详细数据
   document.querySelectorAll('#todays-picks-list li').forEach(item => {
     item.addEventListener('click', () => {
       const productId = item.querySelector('a').dataset.id;
@@ -415,12 +483,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-  // 点击投资组合项目
+  // 点击投资组合项目 - 将来从后端API获取详细数据
   portfolioItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const productId = item.dataset.id;
-      drawKLineChart(productId);
-    });
+    if (!item.classList.contains('add-new-item')) {
+      item.addEventListener('click', () => {
+        const productId = item.dataset.id;
+        drawKLineChart(productId);
+      });
+    }
   });
   
   closeModalBtn.addEventListener('click', closeProductModal);
@@ -432,12 +502,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // 搜索功能
+  // 搜索功能 - 将来与后端API交互进行搜索
   searchInput.addEventListener('input', () => {
     searchProducts(searchInput.value);
   });
   
-  // 初始化今日推荐卡片
+  // 初始化今日推荐卡片 - 将来从后端API获取推荐数据
   initTodaysPicks();
   
   // 初始化今日推荐卡片
@@ -445,11 +515,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('todays-picks');
     container.innerHTML = '';
     
-    // 按涨幅排序
+    // 按涨幅降序排序
     const sortedProducts = Object.keys(productData).sort((a, b) => {
       const changeA = parseFloat(productData[a].change.replace('%', '').replace('+', ''));
       const changeB = parseFloat(productData[b].change.replace('%', '').replace('+', ''));
-      return changeB - changeA;
+      return changeB - changeA; // 已经是降序排列
     });
     
     // 创建卡片
@@ -479,4 +549,4 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(card);
     });
   }
-});
+};

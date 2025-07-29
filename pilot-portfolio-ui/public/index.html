@@ -24,26 +24,11 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <div class="nav-section">
-          <h3>收藏</h3>
-          <ul id="collection-list">
-            <li><a href="#" data-id="1">苹果 (AAPL)</a> <button class="priority-btn">⭐</button></li>
-            <li><a href="#" data-id="2">特斯拉 (TSLA)</a> <button class="priority-btn">⭐</button></li>
-            <li><a href="#" data-id="3">微软 (MSFT)</a> <button class="priority-btn">⭐</button></li>
-            <li><a href="#" data-id="4">阿里巴巴 (BABA)</a> <button class="priority-btn">⭐</button></li>
-            <li><a href="#" data-id="5">腾讯 (0700.HK)</a> <button class="priority-btn">⭐</button></li>
-          </ul>
-        </div>
-        <div class="nav-section">
-          <h3>今日推荐</h3>
-          <ul id="todays-picks-list">
-            <li><a href="#" data-id="1">特斯拉 (TSLA) +5.2%</a></li>
-            <li><a href="#" data-id="2">英伟达 (NVDA) +4.8%</a></li>
-            <li><a href="#" data-id="3">苹果 (AAPL) +3.5%</a></li>
-            <li><a href="#" data-id="4">微软 (MSFT) +2.9%</a></li>
-            <li><a href="#" data-id="5">亚马逊 (AMZN) +2.1%</a></li>
-          </ul>
-        </div>
+        <!-- 引入收藏部分 -->
+        <div id="collection-container"></div>
+        
+        <!-- 引入推荐部分 -->
+        <div id="recommendation-container"></div>
       </nav>
       <div class="sidebar-footer">
         <a href="#" class="settings-link">设置</a>
@@ -66,102 +51,16 @@
           <div class="language-toggle">
             <button id="language-switch" class="language-btn">EN</button>
           </div>
-          <div class="notifications">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z" fill="currentColor"/>
-            </svg>
-            <span class="badge">3</span>
-          </div>
-          <div class="user-profile">
-            <img src="https://via.placeholder.com/32" alt="用户头像">
-            <span>张三</span>
-          </div>
         </div>
       </header>
 
-      <section class="dashboard-content">
-        <div class="right-column">
-          <div class="portfolio-section">
-            <div class="section-header">
-              <h2>我的投资组合</h2>
-              <button class="view-all-btn">查看全部</button>
-            </div>
-            
-            <div class="portfolio-grid">
-              <div class="portfolio-item" data-id="1">
-                <div class="portfolio-header">
-                  <h3>苹果 (AAPL)</h3>
-                  <p class="allocation">25%</p>
-                </div>
-                <div class="portfolio-details">
-                  <p class="shares">持有: 50 股</p>
-                  <p class="value">$9,492.00</p>
-                  <p class="change positive">+$332.22 (3.5%)</p>
-                </div>
-              </div>
-              
-              <div class="portfolio-item" data-id="2">
-                <div class="portfolio-header">
-                  <h3>特斯拉 (TSLA)</h3>
-                  <p class="allocation">20%</p>
-                </div>
-                <div class="portfolio-details">
-                  <p class="shares">持有: 30 股</p>
-                  <p class="value">$7,455.00</p>
-                  <p class="change positive">+$387.66 (5.2%)</p>
-                </div>
-              </div>
-              
-              <div class="portfolio-item" data-id="3">
-                <div class="portfolio-header">
-                  <h3>微软 (MSFT)</h3>
-                  <p class="allocation">18%</p>
-                </div>
-                <div class="portfolio-details">
-                  <p class="shares">持有: 18 股</p>
-                  <p class="value">$6,819.30</p>
-                  <p class="change positive">+$197.76 (2.9%)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="daily-recommendations">
-            <div class="section-header">
-              <h2>今日推荐</h2>
-              <p>根据每日涨幅排序</p>
-            </div>
-            <div id="todays-picks">
-              <!-- 今日推荐内容将通过JS动态生成 -->
-            </div>
-          </div>
-        </div>
+      <div class="content-container">
+        <!-- 引入投资组合部分 -->
+        <div id="portfolio-container"></div>
         
-        <section class="chart-section" id="chart-container">
-          <div class="chart-header">
-            <h2>图表分析</h2>
-            <div class="chart-controls">
-              <select id="chart-timeframe">
-                <option value="1d">1天</option>
-                <option value="1w">1周</option>
-                <option value="1m">1月</option>
-                <option value="3m">3月</option>
-                <option value="1y">1年</option>
-                <option value="5y">5年</option>
-              </select>
-              <div class="chart-indicators">
-                <button class="indicator-btn active">价格</button>
-                <button class="indicator-btn">成交量</button>
-                <button class="indicator-btn">MA</button>
-                <button class="indicator-btn">RSI</button>
-              </div>
-            </div>
-          </div>
-          <div class="chart-placeholder">
-            <p>请从左侧选择产品查看详细图表</p>
-          </div>
-        </section>
-      </section>
+        <!-- 引入图表部分 -->
+        <div id="chart-container-wrapper"></div>
+      </div>
     </main>
   </div>
   
@@ -218,5 +117,33 @@
   </div>
   
   <script src="js/main.js"></script>
+  <script>
+    // 加载组件的函数
+    function loadComponent(url, containerId) {
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById(containerId).innerHTML = html;
+        })
+        .catch(error => {
+          console.error(`加载组件 ${url} 失败:`, error);
+        });
+    }
+    
+    // 页面加载完成后加载所有组件
+    document.addEventListener('DOMContentLoaded', () => {
+      // 加载收藏部分
+      loadComponent('collection.html', 'collection-container');
+      
+      // 加载推荐部分
+      loadComponent('recommendation_chart.html', 'recommendation-container');
+      
+      // 加载投资组合部分
+      loadComponent('portfolio.html', 'portfolio-container');
+      
+      // 加载图表部分 - 现在单独加载
+      loadComponent('chart.html', 'chart-container-wrapper');
+    });
+  </script>
 </body>
 </html>
