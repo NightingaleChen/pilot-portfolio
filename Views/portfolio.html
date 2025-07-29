@@ -1,0 +1,63 @@
+<!-- 我的投资组合部分 - 用于连接后端投资组合数据 -->
+<div class="user-portfolio" id="portfolio-section">
+  <div class="section-header">
+    <h2>我的投资组合</h2>
+    <p>查看您的投资组合表现</p>
+  </div>
+  <div class="portfolio-grid">
+    <!-- 投资组合列表将通过后端API获取数据并动态生成 -->
+    <div class="portfolio-item" data-id="1">
+      <div class="portfolio-header">
+        <h3>苹果 (AAPL)</h3>
+        <span class="allocation">25%</span>
+      </div>
+      <div class="portfolio-details">
+        <p class="shares">持有: 50 股</p>
+        <p class="value">$9,492.00</p>
+        <p class="change positive">+$332.22 (3.5%)</p>
+      </div>
+    </div>
+    
+    <div class="portfolio-item" data-id="2">
+      <div class="portfolio-header">
+        <h3>特斯拉 (TSLA)</h3>
+        <span class="allocation">20%</span>
+      </div>
+      <div class="portfolio-details">
+        <p class="shares">持有: 30 股</p>
+        <p class="value">$7,455.00</p>
+        <p class="change positive">+$387.66 (5.2%)</p>
+      </div>
+    </div>
+    
+    <div class="portfolio-item" data-id="3">
+      <div class="portfolio-header">
+        <h3>微软 (MSFT)</h3>
+        <span class="allocation">18%</span>
+      </div>
+      <div class="portfolio-details">
+        <p class="shares">持有: 18 股</p>
+        <p class="value">$6,819.30</p>
+        <p class="change positive">+$197.76 (2.9%)</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-id="4">
+      <div class="portfolio-header">
+        <h3>英伟达 (NVDA)</h3>
+        <span class="allocation">22%</span>
+      </div>
+      <div class="portfolio-details">
+        <p class="shares">持有: 25 股</p>
+        <p class="value">$12,127.25</p>
+        <p class="change positive">+$582.10 (4.8%)</p>
+      </div>
+    </div>
+
+    <!-- 添加新项目的加号按钮 -->
+    <div class="portfolio-item add-new-item">
+      <div class="add-icon">+</div>
+      <div class="add-text">添加新项目</div>
+    </div>
+  </div>
+</div>
