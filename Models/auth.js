@@ -1,4 +1,7 @@
 // 认证相关的JavaScript代码
+// 添加一个全局变量来跟踪当前登录的用户ID
+let currentLoggedInUserId = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   // 获取DOM元素
   const loginOverlay = document.getElementById('login-overlay');
@@ -25,11 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userData) {
       // 已登录，显示应用界面
       const user = JSON.parse(userData);
+      // 设置当前登录的用户ID
+      currentLoggedInUserId = user.id || user.username;
       displayUserInfo(user);
       loginOverlay.style.display = 'none';
       appContainer.style.display = 'flex';
     } else {
       // 未登录，显示登录界面
+      currentLoggedInUserId = null;
       loginOverlay.style.display = 'flex';
       appContainer.style.display = 'none';
     }
@@ -57,6 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
+    // 检查是否已有其他账号登录
+    if (currentLoggedInUserId && currentLoggedInUserId !== username) {
+      loginError.textContent = '系统已有账号登录，请先退出当前账号';
+      return;
+    }
+    
     try {
       // 发送登录请求
       const response = await fetch('/api/auth/login', {
@@ -76,6 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 保存用户数据到本地存储
       localStorage.setItem('userData', JSON.stringify(userData));
+      
+      // 设置当前登录的用户ID
+      currentLoggedInUserId = userData.id || username;
       
       // 显示用户信息
       displayUserInfo(userData);
@@ -156,6 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleLogout = () => {
     // 清除本地存储的用户数据
     localStorage.removeItem('userData');
+    
+    // 重置当前登录的用户ID
+    currentLoggedInUserId = null;
     
     // 移除logged-in类
     document.body.classList.remove('logged-in');

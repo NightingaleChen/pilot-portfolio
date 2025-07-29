@@ -1064,8 +1064,8 @@ button {
 .balance-item {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
-  font-size: 0.85rem;
+  gap: 5px; /* 在标签和值之间添加间距 */
+  width: 100%;
 }
 
 .balance-label {
@@ -1188,6 +1188,189 @@ button {
 
 .no-btn:hover {
   background-color: var(--light-gray);
+}
+
+/* 资产按钮样式 */
+.assets-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: var(--dark-gray);
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--border-radius-md);
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  max-width: 180px; /* 限制最大宽度 */
+  white-space: nowrap; /* 防止文本换行 */
+  overflow: hidden; /* 隐藏溢出内容 */
+}
+
+.assets-button:hover {
+  background-color: var(--medium-gray);
+}
+
+.assets-button svg {
+  margin-left: 5px;
+  color: var(--primary-color);
+}
+
+/* 资产饼图浮窗样式 */
+.assets-chart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.assets-chart-container {
+  background-color: var(--dark-gray);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 800px;
+  max-width: 90%;
+  padding: 25px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.assets-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--medium-gray);
+  padding-bottom: 15px;
+}
+
+.assets-chart-header h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.close-assets-chart-btn {
+  font-size: 1.5rem;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: color var(--transition-speed);
+}
+
+.close-assets-chart-btn:hover {
+  color: var(--primary-color);
+}
+
+.assets-chart-content {
+  display: flex;
+  gap: 30px;
+}
+
+.pie-chart-container {
+  flex: 1;
+  min-height: 300px;
+}
+
+.assets-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.assets-summary {
+  background-color: var(--medium-gray);
+  border-radius: var(--border-radius-md);
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.summary-item:last-child {
+  margin-bottom: 0;
+}
+
+.summary-label {
+  color: var(--text-light);
+}
+
+.summary-value {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.assets-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.asset-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--medium-gray);
+}
+
+.asset-item:last-child {
+  border-bottom: none;
+}
+
+.asset-name {
+  display: flex;
+  align-items: center;
+}
+
+.asset-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.asset-details {
+  text-align: right;
+}
+
+.asset-value {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.asset-change {
+  font-size: 0.85rem;
+}
+
+.asset-change.positive {
+  color: var(--positive);
+}
+
+.asset-change.negative {
+  color: var(--negative);
+}
+
+@media (max-width: 768px) {
+  .assets-chart-content {
+    flex-direction: column;
+  }
+  
+  .pie-chart-container {
+    min-height: 250px;
+  }
+  
+  .assets-list {
+    max-height: 200px;
+  }
 }
 
 /* 登录状态样式 */
