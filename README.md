@@ -14,4 +14,4 @@ Jul 28 - Aug 1 2025
 
 ## Details:
 - 抓取公司：apple,amazon,google,microsoft,facebook,nvidia,tesla,baidu,alibaba,
-- 抓取大盘：标普500,纳斯达克,道琼斯
+- 抓取大盘：标普500, 纳斯达克, 道琼斯
