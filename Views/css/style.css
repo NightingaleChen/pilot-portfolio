@@ -910,3 +910,291 @@ button {
 .add-to-collection-btn:hover {
   background-color: var(--primary-dark);
 }
+
+/* 登录浮窗样式 */
+.login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.login-container {
+  background-color: var(--dark-gray);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 400px;
+  max-width: 90%;
+  padding: 30px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.login-header .logo svg {
+  margin-right: 10px;
+}
+
+.login-header .logo h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.login-header h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--light-gray);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--medium-gray);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: border-color var(--transition-speed);
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: var(--black);
+  font-weight: 600;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+  margin-bottom: 15px;
+}
+
+.login-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.remember-me input {
+  margin-right: 5px;
+  width: auto;
+}
+
+.forgot-password {
+  color: var(--primary-color);
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.login-error {
+  color: var(--negative);
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+  min-height: 20px;
+}
+
+/* 用户信息样式 */
+.user-menu {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.user-balance {
+  margin-right: 15px;
+}
+
+.balance-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 0.85rem;
+}
+
+.balance-label {
+  color: var(--text-light);
+  margin-right: 5px;
+}
+
+.balance-value {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+}
+
+.user-name {
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--primary-color);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 退出按钮样式 */
+.quit-button {
+  background-color: #FF3D00;
+  color: white;
+  font-weight: 600;
+  padding: 8px 15px;
+  border-radius: var(--border-radius-md);
+  margin-right: 15px;
+  transition: all var(--transition-speed);
+}
+
+.quit-button:hover {
+  background-color: #DD2C00;
+  transform: scale(1.05);
+}
+
+/* 退出确认浮窗样式 */
+.logout-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.logout-confirm-container {
+  background-color: var(--dark-gray);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 350px;
+  max-width: 90%;
+  padding: 25px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.logout-confirm-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logout-confirm-header h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.logout-confirm-content {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.logout-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.confirm-btn {
+  padding: 10px 25px;
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  transition: all var(--transition-speed);
+}
+
+.yes-btn {
+  background-color: var(--negative);
+  color: white;
+}
+
+.yes-btn:hover {
+  background-color: #DD2C00;
+}
+
+.no-btn {
+  background-color: var(--medium-gray);
+  color: var(--text-color);
+}
+
+.no-btn:hover {
+  background-color: var(--light-gray);
+}
+
+/* 登录状态样式 */
+body.logged-in .login-overlay {
+  display: none !important;
+}
+
+body.logged-in .app-container {
+  display: flex !important;
+}
