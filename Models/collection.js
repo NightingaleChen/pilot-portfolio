@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // 如果按钮已经激活，则取消激活
           if (button.classList.contains('active')) {
             button.classList.remove('active');
-            button.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2em">☆</span>'; // 改为白色粗体空心星星
+            button.innerHTML = '☆'; // 改为空心星星
             // 将项目移到列表底部
             collectionList.appendChild(listItem);
           } else {
