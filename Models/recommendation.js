@@ -99,8 +99,8 @@ function initRecommendation() {
         const event = new CustomEvent('drawChart', { 
           detail: { 
             productId: index,
-            stock_name: stock.source, // 使用 stock.source 而不是 stock.source_name
-            source: stock.source,
+            stock_name: stock.source_name, // 修改为使用source_name
+            source: stock.source_name,
             priceChange: formattedPriceChange
           } 
         });

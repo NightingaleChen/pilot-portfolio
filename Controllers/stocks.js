@@ -6,12 +6,12 @@ const cursor = db.getCursor();
 
 // 获取所有股票列表
 function GetStocks(req, res) {
-  const sql = 'SELECT DISTINCT source FROM stocks WHERE source IS NOT NULL';
+  const sql = 'SELECT DISTINCT source_name FROM stocks WHERE source_name IS NOT NULL';
   cursor.execute(sql)
     .then(([rows]) => {
       const stocks = rows.map(row => ({
-        name: row.source,
-        displayName: row.source.charAt(0).toUpperCase() + row.source.slice(1) // 首字母大写
+        name: row.source_name,
+        displayName: row.source_name.charAt(0).toUpperCase() + row.source_name.slice(1) // 首字母大写
       }));
       res.json({ stocks });
     })
@@ -21,27 +21,30 @@ function GetStocks(req, res) {
     });
 }
 
-// 获取特定股票的K线数据（近一个月）
+// 获取特定股票的K线数据
 function GetStockData(req, res) {
   const { stock_name, timeframe } = req.query;
   if (!stock_name) {
     return res.status(400).json({ error: 'stock_name parameter is required' });
   }
   
+  // 打印接收到的参数
+  console.log('接收到的查询参数:', { stock_name, timeframe });
+  
   // 根据timeframe参数确定查询的时间范围
   let dateLimit;
   switch(timeframe) {
-    case '1w': // 一周
-      dateLimit = 'DATE_SUB(NOW(), INTERVAL 1 WEEK)';
-      break;
     case '3m': // 三个月
       dateLimit = 'DATE_SUB(NOW(), INTERVAL 3 MONTH)';
       break;
-    case '6m': // 六个月
+    case '6m': // 三个月
       dateLimit = 'DATE_SUB(NOW(), INTERVAL 6 MONTH)';
       break;
     case '1y': // 一年
       dateLimit = 'DATE_SUB(NOW(), INTERVAL 1 YEAR)';
+      break;
+    case '5y': // 五年
+      dateLimit = 'DATE_SUB(NOW(), INTERVAL 5 YEAR)';
       break;
     case '1m': // 一个月（默认）
     default:
@@ -49,23 +52,24 @@ function GetStockData(req, res) {
       break;
   }
   
-  // 构建SQL查询，获取指定股票近一个月的数据，按日期排序
+  // 构建SQL查询，获取指定股票的数据，按日期排序
   const sql = `
     SELECT date, open, high, low, close, volume 
     FROM stocks 
-    WHERE source = ? AND date >= ${dateLimit} 
+    WHERE source_name = ? AND date >= ${dateLimit} 
     ORDER BY date ASC
   `;
   
   // 打印SQL查询语句
-  // console.log('执行SQL查询:', sql.replace('?', `'${stock_name}'`));
-  // console.log('查询参数:', { stock_name, timeframe });
+  console.log('执行SQL查询:', sql.replace('?', `'${stock_name}'`));
   
   cursor.execute(sql, [stock_name])
     .then(([rows]) => {
       // 打印查询结果
-      // console.log(`查询结果: 获取到${rows.length}条记录`);
-      // console.log('查询结果示例:', rows.length > 0 ? rows[0] : '无数据');
+      console.log(`查询结果: 获取到${rows.length}条记录`);
+      if (rows.length === 0) {
+        console.log(`警告: 未找到符合条件的数据 (股票: ${stock_name}, 时间范围: ${timeframe})`);
+      }
       
       // 格式化日期并返回数据
       const formattedData = rows.map(row => ({
@@ -76,7 +80,6 @@ function GetStockData(req, res) {
         close: row.close,
         volume: row.volume
       }));
-      // console.log(formattedData);
       res.json(formattedData);
     })
     .catch(err => {
@@ -96,18 +99,24 @@ function GetStockDetails(req, res) {
   // 获取最新的股票数据
   const sql = `
     SELECT * FROM stocks 
-    WHERE source = ? 
+    WHERE source_name = ? 
     ORDER BY date DESC 
     LIMIT 1
   `;
   
+  // 打印SQL查询语句
+  console.log('执行SQL查询:', sql.replace('?', `'${stock_name}'`));
+  console.log('查询参数:', { stock_name });
+  
   cursor.execute(sql, [stock_name])
     .then(([rows]) => {
       if (rows.length === 0) {
+        console.log(`未找到股票: ${stock_name}`);
         return res.status(404).json({ error: 'Stock not found' });
       }
       
       const stock = rows[0];
+      console.log('查询结果:', stock);
       
       // 计算涨跌幅
       const change = ((stock.close - stock.open) / stock.open * 100).toFixed(2);
