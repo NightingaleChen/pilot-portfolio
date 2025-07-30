@@ -6,12 +6,14 @@ const authRoutes = require('./Routes/authRoutes');
 
 // Import routes
 const routes = require('./Routes/route');
+const dataserverRoutes = require('./Models/dataserver'); // 导入dataserver路由模块
 
 // Create Express application
 const app = express();
 
-// Set port
-const PORT = process.env.PORT || 1033;
+
+const PORT = process.env.PORT || 1111;
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -31,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'Views')));
 // Add static file service for Models directory
 app.use('/Models', express.static(path.join(__dirname, 'Models')));
 
+
 // API routes
 app.use('/api/auth', authRoutes);
 
@@ -39,11 +42,12 @@ app.use('/Models', express.static(path.join(__dirname, 'Models')));
 // Add CSS directory as static directory
 app.use('/css', express.static(path.join(__dirname, 'Views/css')));
 
-// Use routes
+
+// 使用路由
+app.use('/api/data', dataserverRoutes); // 使用dataserver路由
 app.use('/api', routes);
 
 
-// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Views', 'index.html'));
 });
