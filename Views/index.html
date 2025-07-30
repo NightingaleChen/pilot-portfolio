@@ -10,7 +10,43 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
 </head>
 <body>
-  <div class="app-container">
+  <!-- 登录浮窗 -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-container">
+      <div class="login-header">
+        <div class="logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05887 27.9411 0 18 0C8.05887 0 0 8.05887 0 18C0 27.9411 8.05887 36 18 36Z" fill="#D4AF37"/>
+            <path d="M18 30C24.6274 30 30 24.6274 30 18C30 11.3726 24.6274 6 18 6C11.3726 6 6 11.3726 6 18C6 24.6274 11.3726 30 18 30Z" fill="#D4AF37"/>
+            <path d="M18 24C21.3137 24 24 21.3137 24 18C24 14.6863 21.3137 12 18 12C14.6863 12 12 14.6863 12 18C12 21.3137 14.6863 24 18 24Z" fill="#D4AF37"/>
+          </svg>
+          <h1>Pilot Portfolio</h1>
+        </div>
+        <h2>登录您的账户</h2>
+      </div>
+      <div class="login-form">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input type="text" id="username" placeholder="请输入邮箱地址">
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" id="password" placeholder="请输入密码">
+        </div>
+        <div class="login-error" id="login-error"></div>
+        <button id="login-button" class="login-button">登录</button>
+        <div class="login-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember-me">
+            <span>记住我</span>
+          </label>
+          <a href="#" class="forgot-password">忘记密码?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container" id="app-container" style="display: none;">
     <!-- 侧边栏导航 -->
     <aside class="sidebar">
       <div class="sidebar-header">
@@ -32,7 +68,7 @@
       </nav>
       <div class="sidebar-footer">
         <a href="#" class="settings-link">设置</a>
-        <a href="#" class="logout-link">退出</a>
+        <a href="#" class="logout-link" id="logout-link">退出</a>
       </div>
     </aside>
 
@@ -47,15 +83,58 @@
             </svg>
           </button>
         </div>
+        <!-- 在user-menu div中添加退出按钮，在language-toggle之前 -->
         <div class="user-menu">
-          <div class="language-toggle">
-            <button id="language-switch" class="language-btn">EN</button>
+        <!-- 用户信息区域 -->
+        <div class="user-info">
+          <div class="user-balance">
+            <button id="assets-button" class="assets-button">
+              <div class="balance-item">
+                <span class="balance-label">余额:</span>
+                <span class="balance-value" id="user-balance">$0.00</span>
+              </div>
+              <div class="balance-item">
+                <span class="balance-label">总资产:</span>
+                <span class="balance-value" id="user-total-assets">$0.00</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+              </svg>
+            </button>
           </div>
+        </div>
+        <div class="user-profile">
+        <span class="user-name" id="user-name">未登录</span>
+        <div class="user-avatar">
+        <img id="user-avatar" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="用户头像">
+        </div>
+        </div>
+        <button id="quit-button" class="quit-button">退出</button>
+        <div class="language-toggle">
+        <button id="language-switch" class="language-btn">EN</button>
+        </div>
+        </div>
+        
+        <!-- 在body结束标签前添加退出确认浮窗 -->
+        <!-- 退出确认浮窗 -->
+        <div id="logout-confirm-overlay" class="logout-confirm-overlay">
+        <div class="logout-confirm-container">
+        <div class="logout-confirm-header">
+        <h3>确认退出</h3>
+        </div>
+        <div class="logout-confirm-content">
+        <p>您确定要退出登录吗？</p>
+        </div>
+        <div class="logout-confirm-actions">
+        <button id="logout-confirm-yes" class="confirm-btn yes-btn">是</button>
+        <button id="logout-confirm-no" class="confirm-btn no-btn">否</button>
+        </div>
+        </div>
         </div>
       </header>
 
       <div class="content-container">
-        <!-- 引入投资组合部分 --> <!-- 引用其他页面@ -->
+        <!-- 引入投资组合部分 -->
         <div id="portfolio-container"></div>
         
         <!-- 引入图表部分 -->
@@ -71,6 +150,7 @@
       <button class="close-modal-btn">&times;</button>
     </div>
     <div class="modal-content">
+      <!-- 产品详情内容 -->
       <div class="product-overview">
         <div class="product-basics">
           <h4 id="modal-product-name">产品名称</h4>
@@ -116,283 +196,44 @@
     </div>
   </div>
   
-  <!-- 在底部添加通用JavaScript引用 -->
-  <script src="../Models/common.js"></script>
-  <script>
-    // 加载组件的函数
-    function loadComponent(url, containerId, callback) {
-      fetch(url)
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById(containerId).innerHTML = html;
-          if (callback) callback();
-        })
-        .catch(error => {
-          console.error(`加载组件 ${url} 失败:`, error);
-        });
-    }
-    
-    // 初始化投资组合功能
-    function initPortfolio() {
-      // 定义根据ID获取股票代码的函数（现在这个函数不再需要了，因为我们直接从API获取数据）
-      function getStockSymbolById(id) {
-        const symbolMap = {
-          '1': 'AAPL',
-          '2': 'TSLA',
-          '3': 'MSFT',
-          '4': 'NVDA'
-        };
-        return symbolMap[id] || 'AAPL';
-      }
-
-      // 获取用户持有的所有股票代码
-      async function getUserStockSymbols() {
-        try {
-          const response = await fetch('/api/stocks/symbols');
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const symbols = await response.json();
-          return symbols || [];
-        } catch (error) {
-          console.error('获取用户股票代码列表失败:', error);
-          return [];
-        }
-      }
-
-      // 获取股票名称映射
-      function getStockNameBySymbol(symbol) {
-        const nameMap = {
-          'apple': '苹果 (AAPL)',
-          'tesla': '特斯拉 (TSLA)',
-          'microsoft': '微软 (MSFT)',
-          'NVDA': '英伟达 (NVDA)',
-          'google': '谷歌 (GOOG)',
-          'amazon': '亚马逊 (AMZN)'
-        };
-        return nameMap[symbol] || `${symbol} (${symbol})`;
-      }
-
-      // 获取股票持有数量
-      async function getStockAmount(symbol) {
-        try {
-          const response = await fetch(`/api/stocks/${symbol}/amount?user=morton1`);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          return data.amount || 0;
-        } catch (error) {
-          console.error(`获取股票${symbol}数量失败:`, error);
-          return 0;
-        }
-      }
-
-      // 获取股票当前价格
-      async function getCurrentPrice(symbol) {
-        try {
-          const response = await fetch(`/api/stocks/${symbol}/current`);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          return data.price || 0;
-        } catch (error) {
-          console.error(`获取股票${symbol}价格失败:`, error);
-          return 0;
-        }
-      }
-
-      // 动态生成投资组合项目
-      async function generatePortfolioItems() {
-        // 获取用户持有的股票代码列表
-        const symbols = await getUserStockSymbols();
-        
-        // 获取投资组合容器
-        const portfolioGrid = document.querySelector('.portfolio-grid');
-        if (!portfolioGrid) return;
-        
-        // 清空现有的投资组合项目（除了添加新项目的按钮）
-        while (portfolioGrid.firstChild) {
-          if (!portfolioGrid.lastChild.classList || 
-              !portfolioGrid.lastChild.classList.contains('add-new-item')) {
-            portfolioGrid.removeChild(portfolioGrid.firstChild);
-          } else {
-            break;
-          }
-        }
-        
-        // 为每个股票代码生成投资组合项目
-        for (const symbol of symbols) {
-          // 创建投资组合项目元素
-          const portfolioItem = document.createElement('div');
-          portfolioItem.className = 'portfolio-item';
-          portfolioItem.dataset.symbol = symbol;
-          
-          // 获取股票名称
-          const stockName = getStockNameBySymbol(symbol);
-          
-          // 设置默认内容
-          portfolioItem.innerHTML = `
-            <div class="portfolio-header">
-              <h3>${stockName}</h3>
-              <span class="allocation">-</span>
+  <!-- 资产饼图浮窗 -->
+  <div id="assets-chart-overlay" class="assets-chart-overlay">
+    <div class="assets-chart-container">
+      <div class="assets-chart-header">
+        <h3>资产分布</h3>
+        <button class="close-assets-chart-btn">&times;</button>
+      </div>
+      <div class="assets-chart-content">
+        <div class="pie-chart-container">
+          <canvas id="assets-pie-chart"></canvas>
+        </div>
+        <div class="assets-details">
+          <div class="assets-summary">
+            <div class="summary-item">
+              <span class="summary-label">总资产:</span>
+              <span class="summary-value" id="summary-total-assets">$0.00</span>
             </div>
-            <div class="portfolio-details">
-              <p class="shares">持有: <span class="amount">-</span> 股</p>
-              <p class="value">$<span class="value-amount">-</span></p>
-              <p class="change positive">-</p>
+            <div class="summary-item">
+              <span class="summary-label">现金余额:</span>
+              <span class="summary-value" id="summary-balance">$0.00</span>
             </div>
-          `;
-          
-          // 将项目添加到网格中（在添加新项目按钮之前）
-          const addNewItemButton = portfolioGrid.querySelector('.add-new-item');
-          if (addNewItemButton) {
-            portfolioGrid.insertBefore(portfolioItem, addNewItemButton);
-          } else {
-            portfolioGrid.appendChild(portfolioItem);
-          }
-          
-          // 添加点击事件
-          portfolioItem.addEventListener('click', () => {
-            // 根据股票代码查找对应的ID（如果需要的话）
-            const symbolToIdMap = {
-              'AAPL': '1',
-              'TSLA': '2',
-              'MSFT': '3',
-              'NVDA': '4'
-            };
-            const id = symbolToIdMap[symbol] || '1';
-            window.location.href = `stock_detail.html?id=${id}&symbol=${symbol}`;
-          });
-          
-          // 更新项目数据
-          updatePortfolioItem(portfolioItem, symbol);
-        }
-      }
-
-      // 更新单个投资组合项目的数据
-      async function updatePortfolioItem(item, symbol) {
-        if (!symbol || (item.classList && item.classList.contains('add-new-item'))) return;
-        
-        // 显示加载状态
-        const amountElement = item.querySelector('.amount');
-        const valueElement = item.querySelector('.value-amount');
-        const allocationElement = item.querySelector('.allocation');
-        const changeElement = item.querySelector('.change'); // 获取收益元素
-        
-        if (amountElement) amountElement.textContent = '...';
-        if (valueElement) valueElement.textContent = '...';
-        if (allocationElement) allocationElement.textContent = '...';
-        if (changeElement) changeElement.textContent = '...';
-        
-        try {
-          // 获取真实数据
-          const amount = await getStockAmount(symbol);
-          const price = await getCurrentPrice(symbol);
-          const totalValue = (amount * price).toFixed(2);
-          
-          // 更新显示
-          if (amountElement) {
-            amountElement.textContent = amount;
-          }
-          
-          if (valueElement) {
-            valueElement.textContent = parseFloat(totalValue).toLocaleString();
-          }
-          
-          // 这里可以添加分配比例的计算逻辑
-          if (allocationElement) {
-            allocationElement.textContent = '-'; // 暂时显示占位符
-          }
-          
-          // 使用模拟收益数据，与stock_detail.html保持一致
-          if (changeElement) {
-            // 根据股票代码生成一致的模拟收益数据
-            const symbolToIdMap = {
-              'AAPL': '1',
-              'TSLA': '2',
-              'MSFT': '3',
-              'NVDA': '4'
-            };
-            
-            const id = symbolToIdMap[symbol] || '1';
-            const profitData = {
-              '1': '+$332.22',
-              '2': '+$387.66',
-              '3': '+$197.76',
-              '4': '+$582.10'
-            };
-            
-            // 如果找不到对应的ID，生成随机收益数据
-            let profitText = profitData[id];
-            if (!profitText) {
-              const randomProfit = (Math.random() - 0.5) * 1000;
-              profitText = (randomProfit >= 0 ? '+' : '') + '$' + Math.abs(randomProfit).toFixed(2);
-            }
-            
-            changeElement.textContent = profitText;
-            changeElement.className = 'change positive'; // 默认使用positive类
-          }
-        } catch (error) {
-          console.error('更新投资组合项目失败:', error);
-          if (amountElement) amountElement.textContent = '0';
-          if (valueElement) valueElement.textContent = '0.00';
-          if (allocationElement) allocationElement.textContent = '-';
-          if (changeElement) changeElement.textContent = '$0.00';
-        }
-      }
-
-      // 获取DOM元素
-      const portfolioItems = document.querySelectorAll('.portfolio-item');
-      
-      // 点击投资组合项目 - 跳转到详情页面
-      portfolioItems.forEach(item => {
-        if (!item.classList.contains('add-new-item')) {
-          item.addEventListener('click', () => {
-            const productId = item.dataset.id || '1';
-            const symbol = item.dataset.symbol || 'AAPL';
-            // 跳转到股票详情页面
-            window.location.href = `stock_detail.html?id=${productId}&symbol=${symbol}`;
-          });
-        }
-      });
-      
-      // 添加新项目按钮点击事件 - 将来与后端API交互添加新项目
-      const addNewItemButton = document.querySelector('.add-new-item');
-      if (addNewItemButton) {
-        addNewItemButton.addEventListener('click', () => {
-          // 这里可以添加打开添加新项目表单或对话框的逻辑
-          alert('添加新项目功能即将上线！');
-        });
-      }
-      
-      // 刷新投资组合按钮点击事件
-      const refreshPortfolioBtn = document.getElementById('refresh-portfolio');
-      if (refreshPortfolioBtn) {
-        refreshPortfolioBtn.addEventListener('click', () => {
-          alert('刷新投资组合功能即将上线！');
-        });
-      }
-      
-      // 初始化时生成和更新数据
-      setTimeout(generatePortfolioItems, 100);
-    }
-    
-    // 页面加载完成后加载所有组件
-    document.addEventListener('DOMContentLoaded', () => {
-      // 加载收藏部分
-      loadComponent('collection.html', 'collection-container');
-      
-      // 加载推荐部分
-      loadComponent('recommendation_chart.html', 'recommendation-container');
-      
-      // 加载投资组合部分
-      loadComponent('portfolio.html', 'portfolio-container', initPortfolio);
-      
-      // 加载图表部分 - 现在单独加载
-      loadComponent('chart.html', 'chart-container-wrapper');
-    });
-  </script>
+          </div>
+          <div class="assets-list" id="assets-list">
+            <!-- 资产列表将通过JavaScript动态生成 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 引入JavaScript文件 -->
+  <script src="/Models/common.js"></script>
+  <script src="/Models/componentLoader.js"></script>
+  <script src="/Models/main.js"></script>
+  <script src="/Models/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/Models/assetsChart.js"></script>
+  <script src="/Models/auth.js"></script>
+  <script src="/Models/collection.js"></script>
 </body>
 </html>
