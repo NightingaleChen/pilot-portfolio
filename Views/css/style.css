@@ -201,7 +201,7 @@ button {
 /* 修改投资组合部分样式，使其延伸到页面最右端 */
 .portfolio-section {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .portfolio-header-section {
@@ -1120,21 +1120,32 @@ button {
 .balance-item {
   display: flex;
   align-items: center;
-  gap: 5px; /* 在标签和值之间添加间距 */
-  width: 100%;
+  gap: 8px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding: 0;
+}
+
+.balance-item:not(:last-child) {
+  margin-right: 20px;
 }
 
 .balance-label {
-  color: var(--text-light);
-  margin-right: 5px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 400;
 }
 
 .balance-value {
   color: var(--primary-color);
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: 'SF Pro Display', system-ui, -apple-system, monospace;
+}
+
+/* Make total amount bold for emphasis */
+#user-total-assets {
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .user-profile {
@@ -1249,30 +1260,24 @@ button {
   background-color: var(--light-gray);
 }
 
-/* 资产按钮样式 */
+/* 资产按钮样式 - 简洁现代化 */
 .assets-button {
-  display: inline-flex; /* 修改为 inline-flex */
-  flex-direction: column;
-  align-items: flex-start;
-  background-color: var(--dark-gray);
-  border: 1px solid var(--medium-gray);
-  border-radius: var(--border-radius-md);
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
   padding: 8px 12px;
   cursor: pointer;
-  transition: all var(--transition-speed);
-  max-width: 180px;
+  transition: all 0.2s ease;
+  gap: 20px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* 添加省略号 */
 }
 
 .assets-button:hover {
-  background-color: var(--medium-gray);
-}
-
-.assets-button svg {
-  margin-left: 5px;
-  color: var(--primary-color);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 /* 资产饼图浮窗样式 - 现代化升级 */
