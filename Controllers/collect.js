@@ -1,19 +1,10 @@
-const mysql = require('mysql2');
+// 导入数据库连接模块
+const db = require('../Models/db');
 
-// 创建数据库连接
-const conn = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-<<<<<<< HEAD
-    password: 'root',
-=======
-    password: '1234567890',
->>>>>>> 821f4b40f94182dac806d6b2331c397c107abb4c
-    database: 'pilot'
-});
-
-// 创建游标
-const cursor = conn.promise();
+// 获取数据库游标
+const cursor = db.getCursor();
+// 获取原始连接用于提交事务
+const conn = db.getConnection();
 
 // 获取所有可用的股票列表
 async function GetAllStocks(req, res) {
@@ -52,6 +43,7 @@ async function GetAllStocks(req, res) {
     }
 }
 
+// 其他函数保持不变，只是使用新的 cursor 和 conn
 function AddCollect(req, res) {
     const { user_id, stock_name } = req.body;
     // 获取当前时间戳
