@@ -279,12 +279,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // 绘制K线
+  // 绘制K线
   function drawKLines(data) {
     const width = 1000;
     const height = 300;
     const padding = 40;
-    const availableWidth = width - (padding * 2);
-    const availableHeight = height - (padding * 2);
+    // 增加左侧边距，为价格刻度文本留出更多空间
+    const leftPadding = 60; // 从40增加到60
+    const rightPadding = padding;
+    const topPadding = padding;
+    const bottomPadding = padding;
+    const availableWidth = width - (leftPadding + rightPadding);
+    const availableHeight = height - (topPadding + bottomPadding);
     
     // 找出最高价和最低价
     let minPrice = Infinity;
@@ -295,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       maxPrice = Math.max(maxPrice, parseFloat(day.high));
     });
     
-    // 添加一些边距
+    // 添加一些边距，使图表不会太贴近边缘
     const pricePadding = (maxPrice - minPrice) * 0.1;
     minPrice -= pricePadding;
     maxPrice += pricePadding;
@@ -306,19 +312,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 绘制网格线和坐标轴
     let gridLines = `
-      <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#444" stroke-width="1" />
-      <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#444" stroke-width="1" />
+      <line x1="${leftPadding}" y1="${topPadding}" x2="${leftPadding}" y2="${height - bottomPadding}" stroke="#444" stroke-width="1" />
+      <line x1="${leftPadding}" y1="${height - bottomPadding}" x2="${width - rightPadding}" y2="${height - bottomPadding}" stroke="#444" stroke-width="1" />
     `;
     
     // 价格刻度
     const priceSteps = 5;
     for (let i = 0; i <= priceSteps; i++) {
       const price = minPrice + ((maxPrice - minPrice) * (i / priceSteps));
-      const y = height - padding - (price - minPrice) * yScale;
+      const y = height - bottomPadding - (price - minPrice) * yScale;
       
       gridLines += `
-        <line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
-        <text x="${padding - 5}" y="${y}" text-anchor="end" dominant-baseline="middle" fill="#CCC" font-size="12">${price.toFixed(2)}</text>
+        <line x1="${leftPadding}" y1="${y}" x2="${width - rightPadding}" y2="${y}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
+        <text x="${leftPadding - 10}" y="${y}" text-anchor="end" dominant-baseline="middle" fill="#CCC" font-size="12">${price.toFixed(2)}</text>
       `;
     }
     
@@ -326,13 +332,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateSteps = Math.min(5, data.length);
     for (let i = 0; i < dateSteps; i++) {
       const index = Math.floor((data.length - 1) * (i / (dateSteps - 1)));
-      const x = padding + (index * xScale);
+      const x = leftPadding + (index * xScale);
       
       const date = new Date(data[index].date).toISOString().split('T')[0];
       
       gridLines += `
-        <line x1="${x}" y1="${padding}" x2="${x}" y2="${height - padding}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
-        <text x="${x}" y="${height - padding + 15}" text-anchor="middle" fill="#CCC" font-size="12">${date}</text>
+        <line x1="${x}" y1="${topPadding}" x2="${x}" y2="${height - bottomPadding}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
+        <text x="${x}" y="${height - bottomPadding + 15}" text-anchor="middle" fill="#CCC" font-size="12">${date}</text>
       `;
     }
     
@@ -340,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let kLines = '';
     
     data.forEach((day, i) => {
-      const x = padding + (i * xScale);
+      const x = leftPadding + (i * xScale);
       const open = height - padding - (parseFloat(day.open) - minPrice) * yScale;
       const close = height - padding - (parseFloat(day.close) - minPrice) * yScale;
       const high = height - padding - (parseFloat(day.high) - minPrice) * yScale;
