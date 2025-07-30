@@ -59,13 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 简单验证
     if (!username || !password) {
-      loginError.textContent = '请输入用户名和密码';
+      loginError.textContent = 'Please enter both username and password.';
       return;
     }
     
     // 检查是否已有其他账号登录
     if (currentLoggedInUserId && currentLoggedInUserId !== username) {
-      loginError.textContent = '系统已有账号登录，请先退出当前账号';
+      loginError.textContent = 'Already logged in with another account. Please log out first.';
       return;
     }
     
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || '登录失败');
+        throw new Error(error.error || 'Failed to log in.');
       }
       
       const userData = await response.json();
