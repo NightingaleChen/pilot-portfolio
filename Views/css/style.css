@@ -7,13 +7,18 @@
   --dark-gray: #1E1E1E; /* 稍浅的黑色 */
   --medium-gray: #333333;
   --light-gray: #444444;
+  --background-color-light: #2A2A2A;
   --text-color: #FFFFFF; /* 白色文本 */
   --text-light: #CCCCCC; /* 浅灰色文本 */
+  --white: #FFFFFF;
+  --off-white: #F8F9FA;
   --positive: #FF3D00;
   --negative: #00C853;
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
@@ -271,15 +276,6 @@ button {
 }
 
 /* 扩展图表区域 */
-.chart-section {
-  background-color: var(--background-color);
-  border-radius: var(--border-radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-md);
-  margin-top: 0;
-  height: calc(100vh - 250px);
-  min-height: 400px;
-}
 
 .k-line-chart {
   height: calc(100% - 60px) !important;
@@ -353,37 +349,6 @@ button {
   border-radius: 0; /* 移除圆角 */
   padding: 15px; /* 从20px减小到15px */
   box-shadow: none; /* 移除阴影 */
-}
-
-.portfolio-item:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
-}
-
-/* 添加新项目的样式 */
-.add-new-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(212, 175, 55, 0.1);
-  border: 2px dashed var(--primary-color);
-  min-height: 120px;
-}
-
-.add-icon {
-  font-size: 36px;
-  color: var(--primary-color);
-  margin-bottom: 10px;
-}
-
-.add-text {
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.add-new-item:hover {
-  background-color: rgba(212, 175, 55, 0.2);
 }
 
 /* 图表区域样式 */
@@ -650,11 +615,6 @@ button {
   color: var(--white);
 }
 
-.portfolio-item:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-}
-
 .portfolio-header {
   display: flex;
   justify-content: space-between;
@@ -690,15 +650,6 @@ button {
 .value {
   font-size: 1.1rem;
   font-weight: 600;
-}
-
-/* 图表区域样式 */
-.chart-section {
-  background-color: var(--white);
-  border-radius: var(--border-radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-md);
-  margin-top: 30px;
 }
 
 .chart-header {

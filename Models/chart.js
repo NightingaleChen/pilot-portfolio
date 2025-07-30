@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!placeholder) {
             const newPlaceholder = document.createElement('div');
             newPlaceholder.classList.add('chart-placeholder');
-            newPlaceholder.innerHTML = '<p>请先从左侧选择产品，然后再调整时间范围</p>';
+            newPlaceholder.innerHTML = '<p>Please select a product from the left first, then adjust the time range</p>';
             
             // 清空图表容器
             const chartContent = chartContainer.querySelector('.chart-content');
