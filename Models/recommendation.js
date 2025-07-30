@@ -25,7 +25,7 @@ function initRecommendation() {
     try {
       const response = await fetch('/api/recommend/top');
       if (!response.ok) {
-        throw new Error('获取推荐股票失败');
+        throw new Error('Failed to get recommended stocks');
       }
       const data = await response.json();
       console.log(data);
@@ -43,7 +43,7 @@ function initRecommendation() {
     
     // 显示加载中
     const loadingItem = document.createElement('li');
-    loadingItem.textContent = '加载中...';
+    loadingItem.textContent = 'Loading...';
     recommendationList.appendChild(loadingItem);
     
     // 获取数据
@@ -55,7 +55,7 @@ function initRecommendation() {
     // 检查是否有数据
     if (!stocks || stocks.length === 0) {
       const noDataItem = document.createElement('li');
-      noDataItem.textContent = '暂无推荐数据';
+      noDataItem.textContent = 'No recommendation data available';
       recommendationList.appendChild(noDataItem);
       return;
     }
@@ -72,8 +72,17 @@ function initRecommendation() {
       const link = document.createElement('a');
       link.href = '#';
       link.dataset.id = index;
+      link.dataset.source = stock.source;
+      link.textContent = `${stock.source} ${formattedPriceChange}`;
       link.dataset.source = stock.source_name;
-      link.textContent = `${stock.source_name} ${formattedPriceChange}`;
+      
+      // 创建股票名称和百分比的HTML结构
+      const isPositive = priceChangePercent > 0;
+      const changeClass = isPositive ? 'positive' : 'negative';
+      link.innerHTML = `
+        <span class="stock-name">${stock.source_name}</span>
+        <span class="change ${changeClass}">${formattedPriceChange}</span>
+      `;
       
       // 添加点击事件
       link.addEventListener('click', (e) => {

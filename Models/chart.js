@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 创建图表标题
     const chartTitle = document.createElement('h3');
-    chartTitle.textContent = `${productDetails.name} 价格走势`;
+    chartTitle.textContent = `${productDetails.name} Trends`;
     chartTitle.style.marginBottom = '15px';
     chartTitle.style.color = 'var(--primary-color)';
     
