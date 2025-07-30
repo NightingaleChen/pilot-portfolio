@@ -9,17 +9,64 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初始化加载股票列表
   loadStocksList();
   
-  // 监听时间范围选择变化
-  const timeframeSelect = document.getElementById('chart-timeframe');
-  if (timeframeSelect) {
-    timeframeSelect.addEventListener('change', () => {
-      currentTimeframe = timeframeSelect.value;
-      if (currentProductId) {
-        fetchStockData(currentProductId, currentTimeframe);
-      }
-    });
-  }
-  
+  // 监听时间范围选择变化 - 直接在这里处理，不再嵌套DOMContentLoaded
+  setTimeout(() => {
+    const timeframeSelect = document.getElementById('chart-timeframe');
+    if (timeframeSelect) {
+      console.log('找到时间框选择器元素，准备添加事件监听器');
+      
+      // 移除可能存在的旧事件监听器
+      const newTimeframeSelect = timeframeSelect.cloneNode(true);
+      timeframeSelect.parentNode.replaceChild(newTimeframeSelect, timeframeSelect);
+      
+      // 添加新的事件监听器
+      newTimeframeSelect.addEventListener('change', function() {
+        const selectedTimeframe = this.value;
+        console.log('时间范围已更改为:', selectedTimeframe);
+        
+        // 获取当前选中的股票
+        const activeItem = document.querySelector('#collection-list li.active a');
+        let stockName = null;
+        
+        if (activeItem && activeItem.dataset.name) {
+          stockName = activeItem.dataset.name;
+          currentProductId = stockName;
+        } else if (currentProductId) {
+          stockName = currentProductId;
+        }
+        
+        if (stockName) {
+          console.log('正在使用新的时间范围重新获取数据:', stockName, selectedTimeframe);
+          currentTimeframe = selectedTimeframe;
+          fetchStockData(stockName, selectedTimeframe);
+        } else {
+          console.log('未选择股票，无法更新图表');
+          // 显示提示信息
+          const chartContainer = document.getElementById('chart-container');
+          if (chartContainer) {
+            const placeholder = chartContainer.querySelector('.chart-placeholder');
+            if (!placeholder) {
+              const newPlaceholder = document.createElement('div');
+              newPlaceholder.classList.add('chart-placeholder');
+              newPlaceholder.innerHTML = '<p>请先从左侧选择产品，然后再调整时间范围</p>';
+              
+              // 清空图表容器
+              const chartContent = chartContainer.querySelector('.chart-content');
+              if (chartContent) {
+                chartContent.remove();
+              }
+              
+              chartContainer.querySelector('.chart-header').after(newPlaceholder);
+            }
+          }
+        }
+      });
+      
+      console.log('时间框选择器事件监听器添加完成');
+    } else {
+      console.error('未找到时间框选择器元素 #chart-timeframe');
+    }
+  }, 1000); // 延迟1秒确保DOM完全加载
   // 从后端API获取股票列表
   async function loadStocksList() {
     try {
@@ -40,25 +87,43 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // 从后端API获取股票数据
+  // 从后端API获取股票数据
   async function fetchStockData(stock_name, timeframe = '1m') {
     try {
       console.log("获取股票数据，参数:", { stock_name, timeframe });
       // 不再需要通过ID获取股票名称
-      if (!stock_name) return;
+      if (!stock_name) {
+        console.error('股票名称为空，无法获取数据');
+        return;
+      }
       
       // 获取K线数据
-      const response = await fetch(`/api/stocks/data?stock_name=${stock_name}&timeframe=${timeframe}`);
+      const url = `/api/stocks/data?stock_name=${encodeURIComponent(stock_name)}&timeframe=${encodeURIComponent(timeframe)}`;
+      console.log("请求URL:", url);
+      
+      // 添加时间戳防止缓存
+      const cacheBuster = `&_=${new Date().getTime()}`;
+      const response = await fetch(url + cacheBuster);
+      
       console.log("K线数据响应状态:", response.status, response.statusText);
-      if (!response.ok) throw new Error('获取数据失败');
+      if (!response.ok) {
+        console.error('获取K线数据失败:', response.statusText);
+        throw new Error('获取数据失败');
+      }
       
       const data = await response.json();
-      console.log("获取到的K线数据:", data);
-      console.log("K线数据长度:", Array.isArray(data) ? data.length : '非数组');
+      console.log("获取到的K线数据长度:", Array.isArray(data) ? data.length : '非数组', data);
+      if (Array.isArray(data) && data.length === 0) {
+        console.warn('获取到的K线数据为空');
+      }
       
       // 获取股票详情
-      const detailsResponse = await fetch(`/api/stocks/details?stock_name=${stock_name}`);
+      const detailsResponse = await fetch(`/api/stocks/details?stock_name=${encodeURIComponent(stock_name)}${cacheBuster}`);
       console.log("详情响应状态:", detailsResponse.status, detailsResponse.statusText);
-      if (!detailsResponse.ok) throw new Error('获取详情失败');
+      if (!detailsResponse.ok) {
+        console.error('获取股票详情失败:', detailsResponse.statusText);
+        throw new Error('获取详情失败');
+      }
       
       const details = await detailsResponse.json();
       console.log("获取到的详情数据:", details);
@@ -69,6 +134,36 @@ document.addEventListener('DOMContentLoaded', () => {
       return { data, details };
     } catch (error) {
       console.error('获取股票数据失败:', error);
+      // 显示错误信息
+      const chartContainer = document.getElementById('chart-container');
+      if (chartContainer) {
+        const errorMsg = document.createElement('div');
+        errorMsg.classList.add('error-message');
+        errorMsg.textContent = `获取数据失败: ${error.message}`;
+        errorMsg.style.color = 'red';
+        errorMsg.style.padding = '20px';
+        errorMsg.style.textAlign = 'center';
+        
+        // 清空图表容器
+        const chartContent = chartContainer.querySelector('.chart-content');
+        if (chartContent) {
+          chartContent.remove();
+        }
+        
+        // 移除占位符
+        const placeholder = chartContainer.querySelector('.chart-placeholder');
+        if (placeholder) {
+          placeholder.remove();
+        }
+        
+        // 移除已有的错误信息
+        const existingError = chartContainer.querySelector('.error-message');
+        if (existingError) {
+          existingError.remove();
+        }
+        
+        chartContainer.querySelector('.chart-header').after(errorMsg);
+      }
       return null;
     }
   }
@@ -408,9 +503,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 监听自定义事件，接收来自其他模块的绘制图表请求
   document.addEventListener('drawChart', (event) => {
-    const { productId, stock_name, source } = event.detail;
-    console.log(productId, stock_name, source);
-    if (stock_name) {
+    const { productId, stock_name, source, source_name } = event.detail;
+    console.log(productId, stock_name, source, source_name);
+    if (source_name) {
+      fetchStockData(source_name, currentTimeframe);
+    } else if (stock_name) {
       fetchStockData(stock_name, currentTimeframe);
     } else if (source) {  // 添加对 source 的处理
       fetchStockData(source, currentTimeframe);

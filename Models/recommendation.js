@@ -72,8 +72,8 @@ function initRecommendation() {
       const link = document.createElement('a');
       link.href = '#';
       link.dataset.id = index;
-      link.dataset.source = stock.source;
-      link.textContent = `${stock.source} ${formattedPriceChange}`;
+      link.dataset.source = stock.source_name;
+      link.textContent = `${stock.source_name} ${formattedPriceChange}`;
       
       // 添加点击事件
       link.addEventListener('click', (e) => {
@@ -90,8 +90,8 @@ function initRecommendation() {
         const event = new CustomEvent('drawChart', { 
           detail: { 
             productId: index,
-            stock_name: stock.source, // 使用 stock.source 而不是 stock.source_name
-            source: stock.source,
+            stock_name: stock.source_name, // 修改为使用source_name
+            source: stock.source_name,
             priceChange: formattedPriceChange
           } 
         });

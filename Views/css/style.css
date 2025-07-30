@@ -754,11 +754,23 @@ button {
 #chart-timeframe {
   padding: 8px 12px;
   border-radius: var(--border-radius-md);
-  border: 1px solid var(--medium-gray);
-  background-color: var(--white);
+  border: 1px solid var(--primary-color); /* 修改边框颜色为金色 */
+  background-color: var(--dark-gray); /* 修改背景色为深灰色 */
+  color: var(--text-color); /* 确保文字颜色为白色 */
   font-family: inherit;
   font-size: 0.875rem;
   outline: none;
+  transition: all var(--transition-speed);
+}
+
+#chart-timeframe:hover {
+  border-color: var(--primary-light); /* 悬停时边框颜色变亮 */
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); /* 添加金色阴影效果 */
+}
+
+#chart-timeframe:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
 }
 
 .chart-indicators {
@@ -769,19 +781,24 @@ button {
 .indicator-btn {
   padding: 6px 12px;
   border-radius: var(--border-radius-md);
-  background-color: var(--light-gray);
+  background-color: var(--medium-gray); /* 修改背景色为中灰色 */
+  color: var(--text-color); /* 确保文字颜色为白色 */
   font-size: 0.875rem;
   font-weight: 500;
   transition: all var(--transition-speed);
+  border: 1px solid transparent; /* 添加透明边框 */
 }
 
 .indicator-btn:hover {
-  background-color: var(--medium-gray);
+  background-color: var(--light-gray);
+  border-color: var(--primary-color); /* 悬停时显示金色边框 */
 }
 
 .indicator-btn.active {
-  background-color: var(--primary-color);
-  color: var(--white);
+  background-color: var(--primary-color); /* 保持活跃状态为金色 */
+  color: var(--black); /* 活跃状态文字颜色改为黑色，增加对比度 */
+  border-color: var(--primary-light); /* 边框颜色设为浅金色 */
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5); /* 添加发光效果 */
 }
 
 .chart-placeholder {
