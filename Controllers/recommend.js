@@ -85,7 +85,7 @@ function getTopStocks(req, res) {
     })
     .then(([stocks]) => {
       // 在这里打印查询结果
-      console.log('Return Stocks Data Successfully!');
+    //   console.log('查询结果:', stocks);
       res.json(stocks);
     })
     .catch(err => {

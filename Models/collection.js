@@ -293,9 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (e.target.tagName === 'A' || e.target.closest('a')) {
           e.preventDefault();
           const link = e.target.tagName === 'A' ? e.target : e.target.closest('a');
-          const stockName = link.dataset.name;
+          const stock_name = link.dataset.name;
           // 使用自定义事件通知图表模块绘制图表
-          const event = new CustomEvent('drawChart', { detail: { stockName } });
+          const event = new CustomEvent('drawChart', { detail: { stock_name } });
           document.dispatchEvent(event);
         }
       });
