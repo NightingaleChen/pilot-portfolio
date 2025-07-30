@@ -17,7 +17,7 @@ async function GetAllStocks(req, res) {
         }
         
         // 获取所有不重复的股票源
-        const getAllStocksSql = 'SELECT DISTINCT source FROM stocks WHERE source IS NOT NULL';
+        const getAllStocksSql = 'SELECT DISTINCT source_name FROM stocks WHERE source_name IS NOT NULL';
         const [allStocks] = await cursor.execute(getAllStocksSql);
         
         // 获取该用户已收藏的股票
@@ -29,7 +29,7 @@ async function GetAllStocks(req, res) {
         
         // 过滤掉用户已收藏的股票
         const availableStocks = allStocks
-            .map(row => row.source)
+            .map(row => row.source_name)
             .filter(source => !collectedStockNames.includes(source))
             .map(source => ({
                 name: source,
