@@ -331,7 +331,7 @@ function drawKLineChart(productId) {
   
   // 创建图表标题
   const chartTitle = document.createElement('h3');
-  chartTitle.textContent = `${product.name[currentLang]} 价格走势`;
+  chartTitle.textContent = `${product.name[currentLang]} Trends`;
   chartTitle.style.marginBottom = '15px';
   chartTitle.style.color = 'var(--primary-color)';
   

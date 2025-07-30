@@ -204,20 +204,23 @@
         <button class="close-assets-chart-btn">&times;</button>
       </div>
       <div class="assets-chart-content">
-        <div class="pie-chart-container">
-          <canvas id="assets-pie-chart"></canvas>
-        </div>
-        <div class="assets-details">
+        <div class="assets-chart-main">
+          <div class="pie-chart-container">
+            <canvas id="assets-pie-chart"></canvas>
+          </div>
           <div class="assets-summary">
-            <div class="summary-item">
+            <div class="summary-item total-assets-item">
               <span class="summary-label">Total Assets:</span>
-              <span class="summary-value" id="summary-total-assets">$0.00</span>
+              <span class="summary-value total-assets-value" id="summary-total-assets">$0.00</span>
             </div>
-            <div class="summary-item">
-              <span class="summary-label">Cash:</span>
+            <div class="summary-item cash-item">
+              <span class="summary-label">Available Cash:</span>
               <span class="summary-value" id="summary-balance">$0.00</span>
             </div>
           </div>
+        </div>
+        <div class="assets-list-section">
+          <h4 class="assets-list-title">Portfolio Breakdown</h4>
           <div class="assets-list" id="assets-list">
             <!-- 资产列表将通过JavaScript动态生成 -->
           </div>

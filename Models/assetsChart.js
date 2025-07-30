@@ -22,16 +22,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // 关闭浮窗
   if (closeAssetsChartBtn) {
     closeAssetsChartBtn.addEventListener('click', () => {
-      assetsChartOverlay.style.display = 'none';
+      closeAssetsChart();
     });
   }
   
   // 点击浮窗外部关闭
   window.addEventListener('click', (e) => {
     if (e.target === assetsChartOverlay) {
-      assetsChartOverlay.style.display = 'none';
+      closeAssetsChart();
     }
   });
+  
+  // 关闭资产图表浮窗
+  function closeAssetsChart() {
+    assetsChartOverlay.style.display = 'none';
+    
+    // 重置状态
+    const assetsChartMain = document.querySelector('.assets-chart-main');
+    const assetsListSection = document.querySelector('.assets-list-section');
+    
+    if (assetsChartMain) {
+      assetsChartMain.classList.remove('collapsed');
+    }
+    if (assetsListSection) {
+      assetsListSection.classList.remove('expanded');
+    }
+  }
   
   // 显示资产饼图
   function showAssetsChart() {
@@ -57,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           name: 'Cash Balance',
           value: balance,
-          color: '#4CAF50'
+          color: '#34C759' // 使用现代化的绿色
         }
       ];
       
@@ -136,17 +152,26 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         name: 'Cash Balance',
         value: balance,
-        color: '#4CAF50'
+        color: '#34C759' // 更现代的绿色
       }
     ];
     
-    // 添加持股数据
-    const colors = ['#FFC107', '#2196F3', '#9C27B0', '#F44336', '#3F51B5', '#E91E63', '#00BCD4'];
+    // 添加持股数据 - 使用更现代的配色方案
+    const modernColors = [
+      '#007AFF', // 系统蓝色
+      '#FF9500', // 系统橙色
+      '#AF52DE', // 系统紫色
+      '#FF3B30', // 系统红色
+      '#5856D6', // 系统靛蓝色
+      '#FF2D92', // 系统粉色
+      '#00C7BE', // 系统青色
+      '#30D158'  // 系统薄荷绿
+    ];
     holdings.forEach((holding, index) => {
       pieData.push({
         name: holding.name,
         value: holding.value,
-        color: colors[index % colors.length],
+        color: modernColors[index % modernColors.length],
         changePercent: holding.changePercent,
         isPositive: holding.isPositive
       });
@@ -160,6 +185,65 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 显示浮窗
     assetsChartOverlay.style.display = 'flex';
+    
+    // 添加滚动监听器
+    setTimeout(() => {
+      setupScrollBehavior();
+    }, 100);
+  }
+  
+  // 设置滚动行为
+  function setupScrollBehavior() {
+    const assetsListElement = document.getElementById('assets-list');
+    const assetsChartMain = document.querySelector('.assets-chart-main');
+    const assetsListSection = document.querySelector('.assets-list-section');
+    
+    if (!assetsListElement || !assetsChartMain || !assetsListSection) return;
+    
+    let scrollTimeout;
+    let isExpanded = false;
+    
+    assetsListElement.addEventListener('scroll', () => {
+      const scrollTop = assetsListElement.scrollTop;
+      const scrollHeight = assetsListElement.scrollHeight;
+      const clientHeight = assetsListElement.clientHeight;
+      const scrollThreshold = 30; // Pixels to scroll before triggering
+      const maxScroll = scrollHeight - clientHeight;
+      
+      // Clear any existing timeout
+      clearTimeout(scrollTimeout);
+      
+      // Calculate scroll progress (0 to 1)
+      const scrollProgress = Math.min(scrollTop / Math.max(scrollThreshold, 1), 1);
+      
+      // Determine if we should expand or collapse
+      const shouldExpand = scrollTop > scrollThreshold;
+      
+      if (shouldExpand && !isExpanded) {
+        // Scrolling down - collapse top section and expand list
+        assetsChartMain.classList.add('collapsed');
+        assetsListSection.classList.add('expanded');
+        isExpanded = true;
+      } else if (!shouldExpand && isExpanded) {
+        // At top or scrolling up - restore original state
+        assetsChartMain.classList.remove('collapsed');
+        assetsListSection.classList.remove('expanded');
+        isExpanded = false;
+      }
+      
+      // Update chart on scroll end to maintain responsiveness
+      scrollTimeout = setTimeout(() => {
+        if (pieChart) {
+          pieChart.resize();
+        }
+      }, 100);
+    });
+    
+    // Also handle mouse wheel for smoother experience
+    assetsListElement.addEventListener('wheel', (e) => {
+      // Allow natural scrolling behavior
+      e.stopPropagation();
+    }, { passive: true });
   }
   
   // 绘制饼图
@@ -177,12 +261,19 @@ document.addEventListener('DOMContentLoaded', () => {
       datasets: [{
         data: data.map(item => item.value),
         backgroundColor: data.map(item => item.color),
-        borderColor: '#1E1E1E',
-        borderWidth: 2,
+        borderWidth: 0, // Remove border for clean look
         hoverBorderWidth: 0,
-        hoverOffset: 15,
-        borderRadius: 5,
-        spacing: 5
+        hoverOffset: 20, // 增大悬停偏移
+        borderRadius: 8, // 增大圆角
+        spacing: 3,
+        hoverBackgroundColor: data.map(item => {
+          // 悬停时略微变亮
+          const hex = item.color.replace('#', '');
+          const r = parseInt(hex.substr(0, 2), 16);
+          const g = parseInt(hex.substr(2, 2), 16);
+          const b = parseInt(hex.substr(4, 2), 16);
+          return `rgba(${r}, ${g}, ${b}, 0.9)`;
+        })
       }]
     };
     
@@ -191,42 +282,57 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'doughnut', // 改为环形图，更美观
       data: chartData,
       options: {
-        cutout: '60%', // 环形图中间空白的大小
+        cutout: '70%', // 增大环形图中间空白，更现代
         responsive: true,
         maintainAspectRatio: false,
         layout: {
-          padding: 20
+          padding: 30
         },
         animation: {
           animateScale: true,
-          animateRotate: true
+          animateRotate: true,
+          duration: 1200,
+          easing: 'easeInOutCubic'
+        },
+        interaction: {
+          intersect: false,
+          mode: 'nearest'
         },
         plugins: {
           legend: {
             display: false
           },
           tooltip: {
-            backgroundColor: 'rgba(30, 30, 30, 0.8)',
+            backgroundColor: 'rgba(18, 18, 18, 0.95)',
+            titleColor: '#fff',
+            bodyColor: '#e0e0e0',
+            borderColor: '#333',
+            borderWidth: 1,
             titleFont: {
-              size: 14,
-              weight: 'bold'
+              size: 15,
+              weight: '600',
+              family: 'system-ui, -apple-system, sans-serif'
             },
             bodyFont: {
-              size: 13
+              size: 14,
+              family: 'system-ui, -apple-system, sans-serif'
             },
-            padding: 12,
-            cornerRadius: 8,
+            padding: 16,
+            cornerRadius: 12,
             displayColors: true,
-            boxWidth: 10,
-            boxHeight: 10,
-            boxPadding: 3,
+            boxWidth: 12,
+            boxHeight: 12,
+            boxPadding: 6,
             usePointStyle: true,
+            caretSize: 8,
             callbacks: {
+              title: function(context) {
+                return context[0].label;
+              },
               label: function(context) {
-                const label = context.label || '';
                 const value = context.raw || 0;
                 const percentage = (value / data.reduce((sum, item) => sum + item.value, 0) * 100).toFixed(1);
-                return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                return `$${value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${percentage}%)`;
               }
             }
           }
@@ -240,25 +346,31 @@ document.addEventListener('DOMContentLoaded', () => {
           const ctx = chart.ctx;
           
           ctx.restore();
-          const fontSize = (height / 200).toFixed(2);
-          ctx.font = `${fontSize}em sans-serif`;
+          ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           
           const totalValue = data.reduce((sum, item) => sum + item.value, 0);
-          const text = `$${totalValue.toFixed(2)}`;
-          const textX = Math.round((width - ctx.measureText(text).width) / 2);
-          const textY = height / 2;
+          const centerX = width / 2;
+          const centerY = height / 2;
           
-          ctx.fillStyle = '#D4AF37'; // 金色文字
-          ctx.fillText(text, textX, textY);
+          // 主要数值 - 更大更醒目
+          const mainFontSize = Math.min(width, height) / 12;
+          ctx.font = `600 ${mainFontSize}px 'SF Pro Display', system-ui, -apple-system, sans-serif`;
+          ctx.fillStyle = '#FFFFFF';
+          const text = `$${totalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+          ctx.fillText(text, centerX, centerY - 10);
           
+          // 副标题 - 更精致的样式
+          const subFontSize = Math.min(width, height) / 25;
+          ctx.font = `400 ${subFontSize}px 'SF Pro Display', system-ui, -apple-system, sans-serif`;
+          ctx.fillStyle = '#8E8E93';
           const subText = 'Total Assets';
-          const subTextX = Math.round((width - ctx.measureText(subText).width) / 2);
-          const subTextY = height / 2 + 20;
+          ctx.fillText(subText, centerX, centerY + 25);
           
-          ctx.font = `${fontSize * 0.7}em sans-serif`;
-          ctx.fillStyle = '#AAAAAA';
-          ctx.fillText(subText, subTextX, subTextY);
+          // 添加微妙的阴影效果
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+          ctx.shadowBlur = 4;
+          ctx.shadowOffsetY = 1;
           
           ctx.save();
         }
@@ -266,46 +378,82 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // 生成资产列表
+  // 生成资产列表 - 更现代的设计，不包含现金余额
   function generateAssetsList(data) {
     assetsList.innerHTML = '';
     
-    data.forEach(asset => {
+    // 过滤掉现金余额，只显示股票投资
+    const stockData = data.filter(asset => asset.name !== 'Cash Balance');
+    
+    // 如果没有股票投资，显示提示信息
+    if (stockData.length === 0) {
+      const emptyMessage = document.createElement('div');
+      emptyMessage.className = 'empty-portfolio-message';
+      emptyMessage.innerHTML = `
+        <div class="empty-icon">📊</div>
+        <div class="empty-text">No stock investments yet</div>
+        <div class="empty-subtext">Start building your portfolio to see detailed breakdown here</div>
+      `;
+      assetsList.appendChild(emptyMessage);
+      return;
+    }
+    
+    // 计算股票总价值用于百分比计算
+    const totalStockValue = stockData.reduce((sum, item) => sum + item.value, 0);
+    
+    stockData.forEach((asset, index) => {
       const assetItem = document.createElement('div');
       assetItem.className = 'asset-item';
+      assetItem.style.animationDelay = `${index * 0.1}s`; // 添加渐入动画延迟
       
-      const assetName = document.createElement('div');
-      assetName.className = 'asset-name';
+      const assetLeft = document.createElement('div');
+      assetLeft.className = 'asset-left';
       
       const assetColor = document.createElement('div');
       assetColor.className = 'asset-color';
       assetColor.style.backgroundColor = asset.color;
+      assetColor.style.boxShadow = `0 0 0 2px ${asset.color}20`; // 添加光晕效果
       
-      const assetNameText = document.createElement('span');
+      const assetInfo = document.createElement('div');
+      assetInfo.className = 'asset-info';
+      
+      const assetNameText = document.createElement('div');
+      assetNameText.className = 'asset-name-text';
       assetNameText.textContent = asset.name;
       
-      assetName.appendChild(assetColor);
-      assetName.appendChild(assetNameText);
+      const assetPercentage = document.createElement('div');
+      assetPercentage.className = 'asset-percentage';
+      const percentage = ((asset.value / totalStockValue) * 100).toFixed(1);
+      assetPercentage.textContent = `${percentage}% of stocks`;
       
-      const assetDetails = document.createElement('div');
-      assetDetails.className = 'asset-details';
+      assetInfo.appendChild(assetNameText);
+      assetInfo.appendChild(assetPercentage);
+      
+      assetLeft.appendChild(assetColor);
+      assetLeft.appendChild(assetInfo);
+      
+      const assetRight = document.createElement('div');
+      assetRight.className = 'asset-right';
       
       const assetValue = document.createElement('div');
       assetValue.className = 'asset-value';
-      assetValue.textContent = `$${asset.value.toFixed(2)}`;
+      assetValue.textContent = `$${asset.value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
       
-      assetDetails.appendChild(assetValue);
+      assetRight.appendChild(assetValue);
       
       // 如果有涨跌幅，添加涨跌幅信息
       if (asset.changePercent !== undefined) {
         const assetChange = document.createElement('div');
         assetChange.className = `asset-change ${asset.isPositive ? 'positive' : 'negative'}`;
-        assetChange.textContent = `${asset.isPositive ? '+' : '-'}${asset.changePercent}%`;
-        assetDetails.appendChild(assetChange);
+        assetChange.innerHTML = `
+          <span class="change-icon">${asset.isPositive ? '▲' : '▼'}</span>
+          ${Math.abs(asset.changePercent)}%
+        `;
+        assetRight.appendChild(assetChange);
       }
       
-      assetItem.appendChild(assetName);
-      assetItem.appendChild(assetDetails);
+      assetItem.appendChild(assetLeft);
+      assetItem.appendChild(assetRight);
       
       assetsList.appendChild(assetItem);
     });
