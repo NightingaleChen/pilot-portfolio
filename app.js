@@ -1,17 +1,17 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const authRoutes = require('./Routes/authRoutes'); // 添加这一行
-
+const authRoutes = require('./Routes/authRoutes');
 
 // 导入路由
 const routes = require('./Routes/route');
+const dataserverRoutes = require('./Models/dataserver'); // 导入dataserver路由模块
 
 // 创建Express应用
 const app = express();
 
 // 设置端口
-const PORT = process.env.PORT || 9090;
+const PORT = process.env.PORT || 1111;
 
 // 中间件
 app.use(bodyParser.json());
@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'Views')));
 app.use('/Models', express.static(path.join(__dirname, 'Models')));
 
 // API路由
-app.use('/api/auth', authRoutes); // 添加这一行
+app.use('/api/auth', authRoutes);
 
 // 添加Models目录为静态目录
 app.use('/Models', express.static(path.join(__dirname, 'Models')));
@@ -40,8 +40,8 @@ app.use('/Models', express.static(path.join(__dirname, 'Models')));
 app.use('/css', express.static(path.join(__dirname, 'Views/css')));
 
 // 使用路由
+app.use('/api/data', dataserverRoutes); // 使用dataserver路由
 app.use('/api', routes);
-
 
 // 路由
 app.get('/', (req, res) => {
