@@ -1,11 +1,11 @@
 const Login = (req, res) => {
-  // 简单的模拟登录逻辑
+  // Simple mock login logic
   const { username, password } = req.body;
   
-  // 这里应该有真实的用户验证逻辑
-  // 为了演示，我们使用硬编码的用户信息
+  // There should be real user authentication logic here
+  // For demonstration purposes, we use hardcoded user information
   if (username && password) {
-    // 返回模拟的用户数据
+    // Return mock user data
     return res.json({
       id: 1,
       username: username,
@@ -17,12 +17,12 @@ const Login = (req, res) => {
     });
   }
   
-  return res.status(401).json({ error: "用户名或密码不正确" });
+  return res.status(401).json({ error: "Incorrect username or password" });
 };
 
 const GetUserInfo = (req, res) => {
-  // 获取用户信息的逻辑
-  res.json({ message: "用户信息API" });
+  // Logic to get user information
+  res.json({ message: "User Info API" });
 };
 
 module.exports = {

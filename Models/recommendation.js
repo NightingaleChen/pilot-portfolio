@@ -71,8 +71,8 @@ function initRecommendation() {
       const link = document.createElement('a');
       link.href = '#';
       link.dataset.id = index;
-      link.dataset.source = stock.source;
-      link.textContent = `${stock.source} ${formattedPriceChange}`;
+      link.dataset.source = stock.source_name;
+      link.textContent = `${stock.source_name} ${formattedPriceChange}`;
       
       // 添加点击事件
       link.addEventListener('click', (e) => {
@@ -81,7 +81,7 @@ function initRecommendation() {
         const event = new CustomEvent('drawChart', { 
           detail: { 
             productId: index,
-            source: stock.source,
+            source: stock.source_name,
             priceChange: formattedPriceChange
           } 
         });
