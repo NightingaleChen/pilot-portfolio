@@ -477,13 +477,6 @@ function drawKLineChart(productId) {
     });
   }
   
-  // 添加收藏按钮点击事件
-  // const addCollectionBtn = document.getElementById('add-collection');
-  // if (addCollectionBtn) {
-  //   addCollectionBtn.addEventListener('click', () => {
-  //     alert('添加收藏功能即将上线！');
-  //   });
-  // }
   
   // 刷新投资组合按钮点击事件
   const refreshPortfolioBtn = document.getElementById('refresh-portfolio');
@@ -692,7 +685,7 @@ function loadComponents() {
     },
     {
       container: 'recommendation-container',
-      htmlPath: '/recommendation_chart.html'
+      htmlPath: '/recommendation.html'
     },
     {
       container: 'portfolio-container',
@@ -1153,14 +1146,7 @@ function drawKLineChart(productId) {
       alert('添加新项目功能即将上线！');
     });
   }
-  
-  // 添加收藏按钮点击事件
-  // const addCollectionBtn = document.getElementById('add-collection');
-  // if (addCollectionBtn) {
-  //   addCollectionBtn.addEventListener('click', () => {
-  //     alert('添加收藏功能即将上线！');
-  //   });
-  // }
+
   
   // 刷新投资组合按钮点击事件
   const refreshPortfolioBtn = document.getElementById('refresh-portfolio');
@@ -1696,14 +1682,7 @@ function drawKLineChart(productId) {
       alert('添加新项目功能即将上线！');
     });
   }
-  
-  // 添加收藏按钮点击事件
-  // const addCollectionBtn = document.getElementById('add-collection');
-  // if (addCollectionBtn) {
-  //   addCollectionBtn.addEventListener('click', () => {
-  //     alert('添加收藏功能即将上线！');
-  //   });
-  // }
+
   
   // 刷新投资组合按钮点击事件
   const refreshPortfolioBtn = document.getElementById('refresh-portfolio');

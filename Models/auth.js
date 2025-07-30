@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       {
         container: 'recommendation-container',
-        htmlPath: '/recommendation_chart.html'  // 修改这里，去掉/Views前缀
+        htmlPath: '/recommendation.html'  // 修改这里，去掉/Views前缀
       },
       {
         container: 'portfolio-container',
