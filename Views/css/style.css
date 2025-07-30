@@ -94,13 +94,13 @@ button {
 
 .sidebar-nav {
   flex: 1;
-  padding: 20px 0;
+  padding: 12px 0;
   overflow-y: auto;
 }
 
 .nav-section {
-  margin-bottom: 30px;
-  padding: 15px 20px;
+  /* margin-bottom: 15px; */
+  padding: 10px 14px;
   background-color: transparent;
   border-radius: var(--border-radius-md);
   border: 1px solid transparent;
@@ -176,14 +176,27 @@ button {
   flex-grow: 1;
 }
 
-.sidebar-nav ul li {
+/* Recommendation header layout - matching collection header */
+.recommendation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+.recommendation-header h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin: 0 !important;
+  letter-spacing: 1px;
+  flex-grow: 1;
 }
 
 .sidebar-nav ul li a {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 8px;
   border-radius: var(--border-radius-md);
   font-weight: 500;
   transition: all var(--transition-speed);
@@ -502,50 +515,145 @@ button {
   min-height: 280px; /* 从300px减小到280px */
 }
 
-/* 推荐列表样式 */
+/* Modern recommendation list styles matching favorites design */
+#todays-picks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 #todays-picks-list li {
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 #todays-picks-list li a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-radius: var(--border-radius-md);
-  background-color: var(--medium-gray);
-  transition: all var(--transition-speed);
-  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(45, 45, 45, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 
 #todays-picks-list li a:hover {
-  background-color: var(--light-gray);
-  transform: translateX(5px);
+  background: rgba(55, 55, 55, 0.9);
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* 股票名称样式 - 左对齐 */
+#todays-picks-list li a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+#todays-picks-list li a:hover::before {
+  left: 100%;
+}
+
+/* Stock name styling for recommendations */
 #todays-picks-list .stock-name {
   flex: 1;
   text-align: left;
-  font-weight: 500;
-  font-size: 1.1rem;
-  margin-right: 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-right: 15px;
+  position: relative;
+  z-index: 1;
 }
 
-/* 推荐列表中的百分比颜色 - 右对齐 */
+/* Price change styling for recommendations */
 #todays-picks-list .change {
   font-weight: 600;
   font-size: 1rem;
   text-align: right;
   flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 1;
+  min-width: 55px;
+  text-align: center;
 }
 
 #todays-picks-list .change.positive {
-  color: var(--positive);
+  color: #34C759;
+  background: rgba(52, 199, 89, 0.15);
 }
 
 #todays-picks-list .change.negative {
-  color: var(--negative);
+  color: #FF3B30;
+  background: rgba(255, 59, 48, 0.15);
+}
+
+/* Loading and error states */
+#todays-picks-list .loading-message,
+#todays-picks-list .error-message {
+  padding: 12px;
+  text-align: center;
+  color: var(--text-light);
+  font-style: italic;
+  background: rgba(45, 45, 45, 0.5);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive design for recommendations */
+@media (max-width: 768px) {
+  #todays-picks-list li a {
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+  
+  #todays-picks-list .stock-name {
+    font-size: 0.9rem;
+    margin-right: 10px;
+  }
+  
+  #todays-picks-list .change {
+    font-size: 0.9rem;
+    min-width: 60px;
+    padding: 3px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recommendation-header h3 {
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+  
+  #todays-picks-list li a {
+    padding: 8px 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  #todays-picks-list .stock-name {
+    font-size: 0.95rem;
+    margin-right: 0;
+    margin-bottom: 4px;
+  }
+  
+  #todays-picks-list .change {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    min-width: 55px;
+  }
 }
 
 .search-bar {
@@ -647,23 +755,6 @@ button {
   box-shadow: var(--shadow-md);
 }
 
-#todays-picks-list li {
-  margin-bottom: 10px;
-}
-
-#todays-picks-list li a {
-  display: block;
-  padding: 12px 16px;
-  border-radius: var(--border-radius-md);
-  background-color: var(--medium-gray);
-  transition: all var(--transition-speed);
-}
-
-#todays-picks-list li a:hover {
-  background-color: var(--light-gray);
-  transform: translateX(5px);
-}
-
 .k-line-chart {
   position: relative;
 }
@@ -741,6 +832,7 @@ button {
 
 .user-portfolio {
   grid-column: span 2;
+  margin-top: -10px;
 }
 
 .view-all-btn {
@@ -766,7 +858,7 @@ button {
 }
 
 .portfolio-header h3 {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 600;
   text-align: left;
 }
@@ -818,7 +910,7 @@ button {
 }
 
 .chart-header h2 {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: var(--text-color);
 }
@@ -1286,21 +1378,21 @@ button {
 }
 
 .yes-btn {
-  background-color: var(--negative);
+  background-color: var(--medium-gray);
   color: white;
 }
 
 .yes-btn:hover {
-  background-color: #DD2C00;
+  background-color: var(--negative);
 }
 
 .no-btn {
-  background-color: var(--medium-gray);
-  color: var(--text-color);
+  background-color: var(--positive);
+  color: white;
 }
 
 .no-btn:hover {
-  background-color: var(--light-gray);
+  background-color: #DD2C00;
 }
 
 /* 资产按钮样式 - 简洁现代化 */
@@ -2053,7 +2145,7 @@ button {
 .dialog .stock-name {
   font-weight: 600; /* Increased from 500 for better contrast */
   color: var(--text-color);
-  font-size: 1.3rem; /* Increased from 1.1rem to make it larger */
+  font-size: 1.1rem; /* Increased from 1.1rem to make it larger */
   text-align: left;
   flex: 1; /* Take up available space */
   position: relative;
@@ -2063,7 +2155,7 @@ button {
 /* Dialog-specific stock price styling */
 .dialog .stock-price {
   color: var(--text-light);
-  font-size: 1.1rem; /* Increased from 1rem for better readability */
+  font-size: 1rem; /* Increased from 1rem for better readability */
   font-weight: 500;
   position: relative;
   z-index: 1;
@@ -2073,7 +2165,7 @@ button {
 
 /* Dialog-specific stock change styling */
 .dialog .stock-change {
-  font-size: 1.05rem; /* Increased from 0.95rem for better readability */
+  font-size: 1rem; /* Increased from 0.95rem for better readability */
   font-weight: 600;
   padding: 4px 8px; /* Increased padding for better visual presence */
   border-radius: 6px; /* Slightly increased border radius */
