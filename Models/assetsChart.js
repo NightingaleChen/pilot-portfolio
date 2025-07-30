@@ -34,8 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // 显示资产饼图
-  // 显示资产饼图
-  // 显示资产饼图
   function showAssetsChart() {
     // 获取用户数据
     const userData = localStorage.getItem('userData');
@@ -63,18 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       ];
       
-      // 更新摘要信息
-      summaryTotalAssets.textContent = `$${balance.toFixed(2)}`;
-      summaryBalance.textContent = `$${balance.toFixed(2)}`;
+      // 更新所有资产相关显示
+      const formattedBalance = `$${balance.toFixed(2)}`;
+      [summaryTotalAssets, summaryBalance, userTotalAssets].forEach(element => {
+        if (element) element.textContent = formattedBalance;
+      });
       
-      // 更新用户数据中的总资产
+      // 更新用户数据
       user.totalAssets = balance.toFixed(2);
       localStorage.setItem('userData', JSON.stringify(user));
-      
-      // 更新页面上显示的总资产
-      if (userTotalAssets) {
-        userTotalAssets.textContent = `$${balance.toFixed(2)}`;
-      }
       
       // 绘制饼图
       drawPieChart(pieData);
@@ -317,10 +312,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 在DOMContentLoaded事件中添加调试信息
-document.addEventListener('DOMContentLoaded', () => {
-  // 添加调试信息
-  console.log('资产饼图初始化');
-  const portfolioItems = document.querySelectorAll('.portfolio-item');
-  console.log('找到投资组合项目数量:', portfolioItems.length);
-});
+// 添加基础调试信息
+console.log('资产饼图初始化完成');
