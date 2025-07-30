@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pilot Portfolio - 投资组合管理平台</title>
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+</head>
+<body>
+  <!-- 登录浮窗 -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-container">
+      <div class="login-header">
+        <div class="logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05887 27.9411 0 18 0C8.05887 0 0 8.05887 0 18C0 27.9411 8.05887 36 18 36Z" fill="#D4AF37"/>
+            <path d="M18 30C24.6274 30 30 24.6274 30 18C30 11.3726 24.6274 6 18 6C11.3726 6 6 11.3726 6 18C6 24.6274 11.3726 30 18 30Z" fill="#D4AF37"/>
+            <path d="M18 24C21.3137 24 24 21.3137 24 18C24 14.6863 21.3137 12 18 12C14.6863 12 12 14.6863 12 18C12 21.3137 14.6863 24 18 24Z" fill="#D4AF37"/>
+          </svg>
+          <h1>Pilot Portfolio</h1>
+        </div>
+        <h2>登录您的账户</h2>
+      </div>
+      <div class="login-form">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input type="text" id="username" placeholder="请输入邮箱地址">
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" id="password" placeholder="请输入密码">
+        </div>
+        <div class="login-error" id="login-error"></div>
+        <button id="login-button" class="login-button">登录</button>
+        <div class="login-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember-me">
+            <span>记住我</span>
+          </label>
+          <a href="#" class="forgot-password">忘记密码?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container" id="app-container" style="display: none;">
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05887 27.9411 0 18 0C8.05887 0 0 8.05887 0 18C0 27.9411 8.05887 36 18 36Z" fill="#D4AF37"/>
+            <path d="M18 30C24.6274 30 30 24.6274 30 18C30 11.3726 24.6274 6 18 6C11.3726 6 6 11.3726 6 18C6 24.6274 11.3726 30 18 30Z" fill="#D4AF37"/>
+            <path d="M18 24C21.3137 24 24 21.3137 24 18C24 14.6863 21.3137 12 18 12C14.6863 12 12 14.6863 12 18C12 21.3137 14.6863 24 18 24Z" fill="#D4AF37"/>
+          </svg>
+          <h1>Pilot Portfolio</h1>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <!-- 引入收藏部分 -->
+        <div id="collection-container"></div>
+        
+        <!-- 引入推荐部分 -->
+        <div id="recommendation-container"></div>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="settings-link">设置</a>
+        <a href="#" class="logout-link" id="logout-link">退出</a>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <header class="main-header">
+        <div class="search-bar">
+          <input type="search" placeholder="搜索产品名称..." id="product-search">
+          <button type="submit" aria-label="搜索">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <!-- 在user-menu div中添加退出按钮，在language-toggle之前 -->
+        <div class="user-menu">
+        <!-- 用户信息区域 -->
+        <div class="user-info">
+          <div class="user-balance">
+            <button id="assets-button" class="assets-button">
+              <div class="balance-item">
+                <span class="balance-label">余额:</span>
+                <span class="balance-value" id="user-balance">$0.00</span>
+              </div>
+              <div class="balance-item">
+                <span class="balance-label">总资产:</span>
+                <span class="balance-value" id="user-total-assets">$0.00</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="user-profile">
+        <span class="user-name" id="user-name">未登录</span>
+        <div class="user-avatar">
+        <img id="user-avatar" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="用户头像">
+        </div>
+        </div>
+        <button id="quit-button" class="quit-button">退出</button>
+        <div class="language-toggle">
+        <button id="language-switch" class="language-btn">EN</button>
+        </div>
+        </div>
+        
+        <!-- 在body结束标签前添加退出确认浮窗 -->
+        <!-- 退出确认浮窗 -->
+        <div id="logout-confirm-overlay" class="logout-confirm-overlay">
+        <div class="logout-confirm-container">
+        <div class="logout-confirm-header">
+        <h3>确认退出</h3>
+        </div>
+        <div class="logout-confirm-content">
+        <p>您确定要退出登录吗？</p>
+        </div>
+        <div class="logout-confirm-actions">
+        <button id="logout-confirm-yes" class="confirm-btn yes-btn">是</button>
+        <button id="logout-confirm-no" class="confirm-btn no-btn">否</button>
+        </div>
+        </div>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- 引入投资组合部分 -->
+        <div id="portfolio-container"></div>
+        
+        <!-- 引入图表部分 -->
+        <div id="chart-container-wrapper"></div>
+      </div>
+    </main>
+  </div>
+  
+  <!-- 产品详情浮窗 -->
+  <div class="product-modal" id="product-modal">
+    <div class="modal-header">
+      <h3 id="modal-title">产品详情</h3>
+      <button class="close-modal-btn">&times;</button>
+    </div>
+    <div class="modal-content">
+      <!-- 产品详情内容 -->
+      <div class="product-overview">
+        <div class="product-basics">
+          <h4 id="modal-product-name">产品名称</h4>
+          <p id="modal-product-price" class="price">$0.00</p>
+          <p id="modal-product-change" class="change">0.00%</p>
+        </div>
+        <div class="product-stats">
+          <div class="stat-item">
+            <span class="stat-label">开盘价</span>
+            <span id="modal-open-price" class="stat-value">$0.00</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">最高价</span>
+            <span id="modal-high-price" class="stat-value">$0.00</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">最低价</span>
+            <span id="modal-low-price" class="stat-value">$0.00</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">成交量</span>
+            <span id="modal-volume" class="stat-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">市值</span>
+            <span id="modal-market-cap" class="stat-value">$0.00B</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">52周高</span>
+            <span id="modal-52w-high" class="stat-value">$0.00</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">52周低</span>
+            <span id="modal-52w-low" class="stat-value">$0.00</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="action-btn buy-btn">买入</button>
+        <button class="action-btn sell-btn">卖出</button>
+        <button class="action-btn add-to-collection-btn">添加到收藏</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 资产饼图浮窗 -->
+  <div id="assets-chart-overlay" class="assets-chart-overlay">
+    <div class="assets-chart-container">
+      <div class="assets-chart-header">
+        <h3>资产分布</h3>
+        <button class="close-assets-chart-btn">&times;</button>
+      </div>
+      <div class="assets-chart-content">
+        <div class="pie-chart-container">
+          <canvas id="assets-pie-chart"></canvas>
+        </div>
+        <div class="assets-details">
+          <div class="assets-summary">
+            <div class="summary-item">
+              <span class="summary-label">总资产:</span>
+              <span class="summary-value" id="summary-total-assets">$0.00</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">现金余额:</span>
+              <span class="summary-value" id="summary-balance">$0.00</span>
+            </div>
+          </div>
+          <div class="assets-list" id="assets-list">
+            <!-- 资产列表将通过JavaScript动态生成 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 引入JavaScript文件 -->
+  <script src="/Models/common.js"></script>
+  <script src="/Models/componentLoader.js"></script>
+  <script src="/Models/main.js"></script>
+  <script src="/Models/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/Models/assetsChart.js"></script>
+  <script src="/Models/auth.js"></script>
+  <script src="/Models/collection.js"></script>
+</body>
+</html>
