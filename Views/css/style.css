@@ -9,8 +9,8 @@
   --light-gray: #444444;
   --text-color: #FFFFFF; /* 白色文本 */
   --text-light: #CCCCCC; /* 浅灰色文本 */
-  --positive: #00C853;
-  --negative: #FF3D00;
+  --positive: #FF3D00;
+  --negative: #00C853;
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
