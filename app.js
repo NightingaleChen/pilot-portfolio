@@ -12,7 +12,7 @@ const dataserverRoutes = require('./Models/dataserver'); // 导入dataserver路�
 const app = express();
 
 
-const PORT = process.env.PORT || 1039;
+const PORT = process.env.PORT || 1067;
 
 
 // Middleware

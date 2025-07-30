@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 获取用户收藏列表
     function fetchCollections() {
       console.log("collection list start");
-      fetch(`/api/collect/get?user_id=${userId}`)
+      fetch(`/api/collect/get-with-prices?user_id=${userId}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to get favorites');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return response.json();
         })
         .then(data => {
-          displayCollections(data.stock_names);
+          displayCollections(data.collections);
         })
         .catch(error => {
           console.error('Error:', error);
@@ -34,22 +34,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 显示收藏列表
-    function displayCollections(stockNames) {
-      if (!stockNames || stockNames.length === 0) {
-        collectionList.innerHTML = '<li class="empty-message">No favorites yet</li>';
+        // 显示收藏列表
+    function displayCollections(collections) {
+      if (!collections || collections.length === 0) {
+        collectionList.innerHTML = '<li>No favorites yet</li>';
         return;
       }
       
       collectionList.innerHTML = '';
-      stockNames.forEach(stockName => {
+      collections.forEach(collection => {
+        // 使用通用的价格变化格式化函数
+        const changeInfo = formatPriceChange(collection.price_change);
+        
+        // 格式化价格，保留两位小数
+        const formattedPrice = collection.close_price ? collection.close_price.toFixed(2) : 'N/A';
+        
         const listItem = document.createElement('li');
         listItem.className = 'collection-item';
+        
         listItem.innerHTML = `
-          <a href="#" data-name="${stockName}">${stockName}</a>
+          <a href="#" data-name="${collection.stock_name}">
+            <div class="stock-info">
+              <span class="stock-name">${collection.stock_name}</span>
+              <div class="price-info">
+                <span class="close-price">$${formattedPrice}</span>
+                <span class="change ${changeInfo.className}">${changeInfo.formatted}</span>
+              </div>
+            </div>
+          </a>
           <div class="item-actions">
             <button class="priority-btn">☆</button>
-            <button class="delete-btn" data-name="${stockName}">×</button>
+            <button class="delete-btn" data-name="${collection.stock_name}">×</button>
           </div>
         `;
         collectionList.appendChild(listItem);
@@ -89,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 获取可添加的股票列表
     function fetchAvailableStocks() {
-      fetch(`/api/collect/stocks?user_id=${userId}`)
+      fetch(`/api/collect/stocks-with-prices?user_id=${userId}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to get stock list');
@@ -105,6 +120,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // 格式化价格变化百分比的通用函数
+    function formatPriceChange(priceChange) {
+      if (priceChange === null || priceChange === undefined) {
+        return { formatted: 'N/A', className: '' };
+      }
+      
+      const priceChangePercent = (priceChange * 100).toFixed(2);
+      const isPositive = priceChangePercent > 0;
+      const formatted = isPositive ? `+${priceChangePercent}%` : `${priceChangePercent}%`;
+      const className = isPositive ? 'positive' : 'negative';
+      
+      return { formatted, className };
+    }
+
     // 显示添加股票对话框
     function showAddStockDialog(stocks) {
       // 移除旧对话框（如果存在）
@@ -130,13 +159,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!stocks || stocks.length === 0) {
         dialogContent += '<p>No stocks available to add</p>';
       } else {
-        dialogContent += '<div class="selection-info">Please select stocks to add (multiple selection allowed)</div>';
+        dialogContent += '<div class="selection-info">Please select stocks to add.</div>';
         dialogContent += '<ul class="stock-list">';
         stocks.forEach(stock => {
+          // 格式化价格和变化百分比
+          const priceDisplay = stock.close_price ? `$${stock.close_price.toFixed(2)}` : 'N/A';
+          const changeInfo = formatPriceChange(stock.price_change);
+          
           dialogContent += `<li data-name="${stock.name}">
             <label class="stock-item">
               <input type="checkbox" class="stock-checkbox" data-name="${stock.name}">
-              <span>${stock.displayName}</span>
+              <span class="stock-name">${stock.displayName}</span>
+              <span class="stock-price">${priceDisplay}</span>
+              <span class="stock-change ${changeInfo.className}">${changeInfo.formatted}</span>
             </label>
           </li>`;
         });

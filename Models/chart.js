@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!placeholder) {
             const newPlaceholder = document.createElement('div');
             newPlaceholder.classList.add('chart-placeholder');
-            newPlaceholder.innerHTML = '<p>请先从左侧选择产品，然后再调整时间范围</p>';
+            newPlaceholder.innerHTML = '<p>Please select a product from the left first, then adjust the time range</p>';
             
             // 清空图表容器
             const chartContent = chartContainer.querySelector('.chart-content');
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 创建图表标题
     const chartTitle = document.createElement('h3');
-    chartTitle.textContent = `${productDetails.name} Trends`;
+    chartTitle.textContent = `${productDetails.name} Trend`;
     chartTitle.style.marginBottom = '15px';
     chartTitle.style.color = 'var(--primary-color)';
     
@@ -273,10 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const height = 300;
     const padding = 40;
     // 增加左侧边距，为价格刻度文本留出更多空间
-    const leftPadding = 60; // 从40增加到60
+    const leftPadding = 80; // 从40增加到60
     const rightPadding = padding;
-    const topPadding = padding;
-    const bottomPadding = padding;
+    const topPadding = padding - 10;
+    const bottomPadding = padding; // 增加底部边距，为x轴日期标签提供更多空间
     const availableWidth = width - (leftPadding + rightPadding);
     const availableHeight = height - (topPadding + bottomPadding);
     
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       gridLines += `
         <line x1="${x}" y1="${topPadding}" x2="${x}" y2="${height - bottomPadding}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
-        <text x="${x}" y="${height - bottomPadding + 15}" text-anchor="middle" fill="#CCC" font-size="12">${date}</text>
+        <text x="${x}" y="${height}" text-anchor="middle" fill="#CCC" font-size="12">${date}</text>
       `;
     }
     

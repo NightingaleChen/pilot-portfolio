@@ -236,7 +236,7 @@ function drawKLineChart(productId) {
   
   // 创建图表标题
   const chartTitle = document.createElement('h3');
-  chartTitle.textContent = `${product.name} Trends`;
+  chartTitle.textContent = `${product.name} Trend`;
   chartTitle.style.marginBottom = '15px';
   chartTitle.style.color = 'var(--primary-color)';
   
