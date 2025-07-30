@@ -50,7 +50,8 @@ document.addEventListener('componentsLoaded', () => {
 function initializeApp() {
   // 获取DOM元素
   const collectionList = document.getElementById('collection-list');
-  const collectionItems = document.querySelectorAll('#collection-list li');
+  // 移除这行，避免与collection.js中的事件绑定冲突
+  // const collectionItems = document.querySelectorAll('#collection-list li');
   const priorityButtons = document.querySelectorAll('.priority-btn');
   const languageSwitch = document.getElementById('language-switch');
   const chartContainer = document.getElementById('chart-container');
@@ -492,17 +493,17 @@ function drawKLineChart(productId) {
     });
   }
   
-  // 点击收藏项目 - 将来从后端API获取详细数据
-  if (collectionItems && collectionItems.length > 0) {
-    collectionItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        if (e.target.tagName !== 'BUTTON') {
-          const productId = item.querySelector('a').dataset.id;
-          drawKLineChart(productId);
-        }
-      });
-    });
-  }
+  // 移除这段代码，避免与collection.js中的事件绑定冲突
+  // if (collectionItems && collectionItems.length > 0) {
+  //   collectionItems.forEach(item => {
+  //     item.addEventListener('click', (e) => {
+  //       if (e.target.tagName !== 'BUTTON') {
+  //         const productId = item.querySelector('a').dataset.id;
+  //         drawKLineChart(productId);
+  //       }
+  //     });
+  //   });
+  // }
   
   // 点击推荐项目 - 将来从后端API获取详细数据
   document.querySelectorAll('#todays-picks-list li').forEach(item => {
@@ -1712,5 +1713,3 @@ function drawKLineChart(productId) {
     });
   }
 };
-  // 点击收藏项目 - 将来从后端API获取详细数据
-  // 这里应该添加相应的代码，或者删除这个注释

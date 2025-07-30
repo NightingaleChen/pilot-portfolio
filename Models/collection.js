@@ -255,52 +255,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // 添加事件监听器
+    // 添加事件监听器
     function addEventListeners() {
-      // 优先级按钮点击事件
-      const priorityButtons = document.querySelectorAll('.priority-btn');
-      priorityButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
+      // 使用事件委托处理所有收藏项的点击事件
+      collectionList.addEventListener('click', (e) => {
+        // 处理优先级按钮点击
+        if (e.target.classList.contains('priority-btn') || e.target.closest('.priority-btn')) {
           e.stopPropagation();
+          const button = e.target.classList.contains('priority-btn') ? e.target : e.target.closest('.priority-btn');
           const listItem = button.closest('li');
           
           // 如果按钮已经激活，则取消激活
           if (button.classList.contains('active')) {
             button.classList.remove('active');
-            button.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2em">☆</span>'; // 改为白色粗体空心星星
+            button.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2em">☆</span>';
             // 将项目移到列表底部
             collectionList.appendChild(listItem);
           } else {
             // 激活按钮
             button.classList.add('active');
-            button.innerHTML = '★'; // 实心星星
+            button.innerHTML = '★';
             // 将项目移到列表顶部
             collectionList.prepend(listItem);
           }
-        });
-      });
-      
-      // 删除按钮点击事件
-      const deleteButtons = document.querySelectorAll('.delete-btn');
-      deleteButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
+        }
+        
+        // 处理删除按钮点击
+        else if (e.target.classList.contains('delete-btn')) {
           e.stopPropagation();
-          const stockName = button.dataset.name;
+          const stockName = e.target.dataset.name;
           if (confirm(`确定要删除 ${stockName} 吗？`)) {
             deleteCollection(stockName);
           }
-        });
-      });
-      
-      // 股票项目点击事件
-      const stockItems = document.querySelectorAll('.collection-item a');
-      stockItems.forEach(item => {
-        item.addEventListener('click', (e) => {
+        }
+        
+        // 处理股票项目点击
+        else if (e.target.tagName === 'A' || e.target.closest('a')) {
           e.preventDefault();
-          const stockName = item.dataset.name;
+          const link = e.target.tagName === 'A' ? e.target : e.target.closest('a');
+          const stockName = link.dataset.name;
           // 使用自定义事件通知图表模块绘制图表
           const event = new CustomEvent('drawChart', { detail: { stockName } });
           document.dispatchEvent(event);
-        });
+        }
       });
     }
     
