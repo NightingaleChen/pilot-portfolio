@@ -354,7 +354,6 @@ button {
 /* 图表区域样式 */
 .chart-section {
   width: 100%;
-  background-color: var(--dark-gray);
   border-radius: var(--border-radius-lg);
   padding: 15px; /* 从20px减小到15px */
   box-shadow: var(--shadow-md);
