@@ -137,16 +137,17 @@ button {
 
 /* 修改收藏按钮样式 */
 .priority-btn {
-  background: rgba(255, 255, 255, 0.1); /* 添加淡白色填充背景 */
-  color: rgba(255, 255, 255, 0.5); /* 非激活状态颜色 - 半透明白色 */
+  background: none;
+  border: none;
+  color: var(--medium-gray); /* 非激活状态颜色 */
   cursor: pointer;
   font-size: 1.2rem;
   transition: all var(--transition-speed);
+  padding: 0;
   margin-left: 5px;
   margin-right: 5px;
-  opacity: 0.5;
-  padding: 5px; /* 添加内边距使按钮更明显 */
-  border-radius: var(--border-radius-sm); /* 添加圆角 */
+  opacity: 0.5;  /* 添加内边距使按钮更明显 */
+  
 }
 
 .priority-btn.active {

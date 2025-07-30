@@ -1,10 +1,18 @@
 // 导入数据库连接模块
 const db = require('../Models/db');
 
-// 获取数据库游标
-const cursor = db.getCursor();
-// 获取原始连接用于提交事务
-const conn = db.getConnection();
+
+// 创建数据库连接
+const conn = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'pilot'
+});
+
+// 创建游标
+const cursor = conn.promise();
+
 
 // 获取所有可用的股票列表
 async function GetAllStocks(req, res) {
