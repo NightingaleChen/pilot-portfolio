@@ -1,5 +1,5 @@
-// 认证相关的JavaScript代码
-// 添加一个全局变量来跟踪当前登录的用户ID
+// Authentication related JavaScript code
+// Add a global variable to track current logged-in user ID
 let currentLoggedInUserId = null;
 
 document.addEventListener('DOMContentLoaded', () => {

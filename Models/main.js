@@ -53,77 +53,16 @@ function initializeApp() {
   // 移除这行，避免与collection.js中的事件绑定冲突
   // const collectionItems = document.querySelectorAll('#collection-list li');
   const priorityButtons = document.querySelectorAll('.priority-btn');
-  const languageSwitch = document.getElementById('language-switch');
   const chartContainer = document.getElementById('chart-container');
   const searchInput = document.getElementById('product-search');
   const productModal = document.getElementById('product-modal');
   const closeModalBtn = document.querySelector('.close-modal-btn');
   const portfolioItems = document.querySelectorAll('.portfolio-item');
   
-  // 多语言翻译数据
-  const translations = {
-    'zh-CN': {
-      shares: '持有',
-      search: "搜索产品名称...",
-      collection: "收藏",
-      recommendations: "今日推荐",
-      sortedBy: "根据每日涨幅排序",
-      portfolio: "我的投资组合",
-      viewAll: "查看全部",
-      shares: "持有",
-      chartAnalysis: "图表分析",
-      selectProduct: "请从左侧选择产品查看详细图表",
-      settings: "设置",
-      logout: "退出",
-      productDetails: "产品详情",
-      openPrice: "开盘价",
-      highPrice: "最高价",
-      lowPrice: "最低价",
-      volume: "成交量",
-      marketCap: "市值",
-      weekHigh: "52周高",
-      weekLow: "52周低",
-      buy: "买入",
-      sell: "卖出",
-      addToCollection: "添加到收藏"
-    },
-    'en-US': {
-      shares: 'Shares',
-      search: "Search products...",
-      collection: "Collection",
-      recommendations: "Today's Picks",
-      sortedBy: "Sorted by daily change",
-      portfolio: "My Portfolio",
-      viewAll: "View All",
-      shares: "Shares",
-      chartAnalysis: "Chart Analysis",
-      selectProduct: "Please select a product from the left to view detailed chart",
-      settings: "Settings",
-      logout: "Logout",
-      productDetails: "Product Details",
-      openPrice: "Open Price",
-      highPrice: "High Price",
-      lowPrice: "Low Price",
-      volume: "Volume",
-      marketCap: "Market Cap",
-      weekHigh: "52W High",
-      weekLow: "52W Low",
-      buy: "Buy",
-      sell: "Sell",
-      addToCollection: "Add to Collection"
-    }
-  };
-  
-  // 当前语言
-  let currentLang = 'zh-CN';
-  
   // 模拟产品数据 - 将来从后端API获取
   const productData = {
     1: {
-      name: {
-        zh: '特斯拉 (TSLA)',
-        en: 'Tesla (TSLA)'
-      },
+      name: 'Tesla (TSLA)',
       price: '$248.50',
       change: '+5.2%',
       openPrice: '$236.10',
@@ -136,10 +75,7 @@ function initializeApp() {
       kLineData: generateKLineData(100, 200, 250)
     },
     2: {
-      name: {
-        zh: '英伟达 (NVDA)',
-        en: 'NVIDIA (NVDA)'
-      },
+      name: 'NVIDIA (NVDA)',
       price: '$485.09',
       change: '+4.8%',
       openPrice: '$465.30',
@@ -152,10 +88,7 @@ function initializeApp() {
       kLineData: generateKLineData(400, 450, 500)
     },
     3: {
-      name: {
-        zh: '苹果 (AAPL)',
-        en: 'Apple (AAPL)'
-      },
+      name: 'Apple (AAPL)',
       price: '$189.84',
       change: '+3.5%',
       openPrice: '$183.50',
@@ -168,10 +101,7 @@ function initializeApp() {
       kLineData: generateKLineData(150, 180, 200)
     },
     4: {
-      name: {
-        zh: '微软 (MSFT)',
-        en: 'Microsoft (MSFT)'
-      },
+      name: 'Microsoft (MSFT)',
       price: '$378.85',
       change: '+2.9%',
       openPrice: '$368.20',
@@ -184,10 +114,7 @@ function initializeApp() {
       kLineData: generateKLineData(350, 370, 390)
     },
     5: {
-      name: {
-        zh: '亚马逊 (AMZN)',
-        en: 'Amazon (AMZN)'
-      },
+      name: 'Amazon (AMZN)',
       price: '$178.75',
       change: '+2.1%',
       openPrice: '$175.10',
@@ -231,28 +158,6 @@ function initializeApp() {
     return data;
   }
   
-  // 切换语言
-  function switchLanguage() {
-    currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    languageSwitch.textContent = currentLang === 'zh' ? 'EN' : '中';
-    
-    // 更新界面文本
-    document.getElementById('product-search').placeholder = translations[currentLang].search;
-    document.querySelector('.nav-section h3:first-child').textContent = translations[currentLang].collection;
-    document.querySelector('.nav-section h3:nth-child(1)').textContent = translations[currentLang].recommendations;
-    document.querySelector('.daily-recommendations .section-header h2').textContent = translations[currentLang].recommendations;
-    document.querySelector('.daily-recommendations .section-header p').textContent = translations[currentLang].sortedBy;
-    document.querySelector('.portfolio-section .section-header h2').textContent = translations[currentLang].portfolio;
-    document.querySelector('.view-all-btn').textContent = translations[currentLang].viewAll;
-    document.querySelector('.chart-section .chart-header h2').textContent = translations[currentLang].chartAnalysis;
-    document.querySelector('.chart-placeholder p').textContent = translations[currentLang].selectProduct;
-    document.querySelector('.settings-link').textContent = translations[currentLang].settings;
-    document.querySelector('.logout-link').textContent = translations[currentLang].logout;
-    
-    // 更新产品名称
-    updateProductNames();
-  }
-  
   // 更新产品名称
   function updateProductNames() {
     // 更新收藏列表 - 将来从后端API获取数据
@@ -260,7 +165,7 @@ function initializeApp() {
     collectionItems.forEach(item => {
       const id = item.dataset.id;
       if (productData[id]) {
-        item.textContent = productData[id].name[currentLang];
+        item.textContent = productData[id].name;
       }
     });
     
@@ -270,7 +175,7 @@ function initializeApp() {
       const id = item.dataset.id;
       if (productData[id]) {
         const change = productData[id].change;
-        item.textContent = `${productData[id].name[currentLang]} ${change}`;
+        item.textContent = `${productData[id].name} ${change}`;
       }
     });
     
@@ -279,7 +184,7 @@ function initializeApp() {
     portfolioItems.forEach(item => {
       const id = item.closest('.portfolio-item').dataset.id;
       if (productData[id]) {
-        item.textContent = productData[id].name[currentLang];
+        item.textContent = productData[id].name;
       }
     });
     
@@ -287,7 +192,7 @@ function initializeApp() {
     const sharesTexts = document.querySelectorAll('.shares');
     sharesTexts.forEach(item => {
       const shares = item.textContent.split(': ')[1];
-      item.textContent = `${translations[currentLang].shares}: ${shares}`;
+      item.textContent = `Shares: ${shares}`;
     });
   }
   
@@ -331,7 +236,7 @@ function drawKLineChart(productId) {
   
   // 创建图表标题
   const chartTitle = document.createElement('h3');
-  chartTitle.textContent = `${product.name[currentLang]} Trends`;
+  chartTitle.textContent = `${product.name} Trends`;
   chartTitle.style.marginBottom = '15px';
   chartTitle.style.color = 'var(--primary-color)';
   
@@ -465,24 +370,24 @@ function drawKLineChart(productId) {
     });
   });
   
-  // 语言切换按钮
-  languageSwitch.addEventListener('click', switchLanguage);
+  // 语言切换按钮 - 已移除
+  // 原语言切换功能已移除
   
-  // 添加新项目按钮点击事件 - 将来与后端API交互添加新项目
+  // Create new project button click event - Future backend API integration for adding new projects
   const addNewItemButton = document.querySelector('.add-new-item');
   if (addNewItemButton) {
     addNewItemButton.addEventListener('click', () => {
-      // 这里可以添加打开添加新项目表单或对话框的逻辑
-      alert('添加新项目功能即将上线！');
+      // Add logic for opening new project form or dialog here
+      alert('Add new project feature coming soon!');
     });
   }
   
   
-  // 刷新投资组合按钮点击事件
+  // Refresh portfolio button click event
   const refreshPortfolioBtn = document.getElementById('refresh-portfolio');
   if (refreshPortfolioBtn) {
     refreshPortfolioBtn.addEventListener('click', () => {
-      alert('刷新投资组合功能即将上线！');
+      alert('Refresh portfolio feature coming soon!');
     });
   }
   
@@ -555,7 +460,7 @@ function drawKLineChart(productId) {
       
       card.innerHTML = `
         <div class="product-info">
-          <h3>${product.name[currentLang]}</h3>
+          <h3>${product.name}</h3>
           <p class="price">${product.price}</p>
           <p class="change positive">${product.change}</p>
         </div>
@@ -645,7 +550,7 @@ function drawKLineChart(productId) {
       
       card.innerHTML = `
         <div class="product-info">
-          <h3>${product.name[currentLang]}</h3>
+          <h3>${product.name}</h3>
           <p class="price">${product.price}</p>
           <p class="change positive">${product.change}</p>
         </div>
