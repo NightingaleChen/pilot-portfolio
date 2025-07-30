@@ -1,18 +1,10 @@
 // 导入数据库连接模块
 const db = require('../Models/db');
 
-
-// 创建数据库连接
-const conn = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'pilot'
-});
-
-// 创建游标
-const cursor = conn.promise();
-
+// 获取数据库游标
+const cursor = db.getCursor();
+// 获取原始连接用于提交事务
+const conn = db.getConnection();
 
 // 获取所有可用的股票列表
 async function GetAllStocks(req, res) {
@@ -25,7 +17,7 @@ async function GetAllStocks(req, res) {
         }
         
         // 获取所有不重复的股票源
-        const getAllStocksSql = 'SELECT DISTINCT source FROM stocks WHERE source IS NOT NULL';
+        const getAllStocksSql = 'SELECT DISTINCT source_name FROM stocks WHERE source_name IS NOT NULL';
         const [allStocks] = await cursor.execute(getAllStocksSql);
         
         // 获取该用户已收藏的股票
@@ -37,7 +29,7 @@ async function GetAllStocks(req, res) {
         
         // 过滤掉用户已收藏的股票
         const availableStocks = allStocks
-            .map(row => row.source)
+            .map(row => row.source_name)
             .filter(source => !collectedStockNames.includes(source))
             .map(source => ({
                 name: source,

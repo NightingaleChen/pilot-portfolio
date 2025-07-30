@@ -25,9 +25,10 @@ function initRecommendation() {
     try {
       const response = await fetch('/api/recommend/top');
       if (!response.ok) {
-        throw new Error('获取推荐股票失败');
+        throw new Error('Failed to get recommended stocks');
       }
       const data = await response.json();
+      console.log(data);
       return data;
     } catch (error) {
       console.error('获取推荐股票失败:', error);
@@ -42,7 +43,7 @@ function initRecommendation() {
     
     // 显示加载中
     const loadingItem = document.createElement('li');
-    loadingItem.textContent = '加载中...';
+    loadingItem.textContent = 'Loading...';
     recommendationList.appendChild(loadingItem);
     
     // 获取数据
@@ -54,7 +55,7 @@ function initRecommendation() {
     // 检查是否有数据
     if (!stocks || stocks.length === 0) {
       const noDataItem = document.createElement('li');
-      noDataItem.textContent = '暂无推荐数据';
+      noDataItem.textContent = 'No recommendation data available';
       recommendationList.appendChild(noDataItem);
       return;
     }
@@ -73,15 +74,33 @@ function initRecommendation() {
       link.dataset.id = index;
       link.dataset.source = stock.source;
       link.textContent = `${stock.source} ${formattedPriceChange}`;
+      link.dataset.source = stock.source_name;
+      
+      // 创建股票名称和百分比的HTML结构
+      const isPositive = priceChangePercent > 0;
+      const changeClass = isPositive ? 'positive' : 'negative';
+      link.innerHTML = `
+        <span class="stock-name">${stock.source_name}</span>
+        <span class="change ${changeClass}">${formattedPriceChange}</span>
+      `;
       
       // 添加点击事件
       link.addEventListener('click', (e) => {
         e.preventDefault();
+        
+        // 调试输出
+        console.log('点击推荐项:', stock);
+        console.log('source_name:', stock.source_name);
+        
+        // 确保 source_name 存在
+        const stockName = stock.source_name || stock.stock_name || `stock_${index}`;
+        
         // 使用自定义事件通知图表模块绘制图表
         const event = new CustomEvent('drawChart', { 
           detail: { 
             productId: index,
-            source: stock.source,
+            stock_name: stock.source_name, // 修改为使用source_name
+            source: stock.source_name,
             priceChange: formattedPriceChange
           } 
         });

@@ -9,7 +9,7 @@ const ComponentLoader = (() => {
     },
     {
       container: 'recommendation-container',
-      htmlPath: '/recommendation_chart.html',  // 去掉/Views前缀
+      htmlPath: '/recommendation.html',  // 去掉/Views前缀
       jsPath: '/Models/recommendation.js'
     },
     {

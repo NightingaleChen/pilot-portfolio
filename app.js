@@ -3,21 +3,23 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const authRoutes = require('./Routes/authRoutes');
 
-// 导入路由
+
+// Import routes
 const routes = require('./Routes/route');
 const dataserverRoutes = require('./Models/dataserver'); // 导入dataserver路由模块
 
-// 创建Express应用
+// Create Express application
 const app = express();
 
-// 设置端口
+
 const PORT = process.env.PORT || 1111;
 
-// 中间件
+
+// Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 设置MIME类型
+// Set MIME type
 app.use((req, res, next) => {
   const ext = path.extname(req.url);
   if (ext === '.js') {
@@ -26,29 +28,31 @@ app.use((req, res, next) => {
   next();
 });
 
-// 静态文件服务
+// Static file service
 app.use(express.static(path.join(__dirname, 'Views')));
-// 添加Models目录的静态文件服务
+// Add static file service for Models directory
 app.use('/Models', express.static(path.join(__dirname, 'Models')));
 
-// API路由
+
+// API routes
 app.use('/api/auth', authRoutes);
 
-// 添加Models目录为静态目录
+// Add Models directory as static directory
 app.use('/Models', express.static(path.join(__dirname, 'Models')));
-// 添加CSS目录为静态目录
+// Add CSS directory as static directory
 app.use('/css', express.static(path.join(__dirname, 'Views/css')));
+
 
 // 使用路由
 app.use('/api/data', dataserverRoutes); // 使用dataserver路由
 app.use('/api', routes);
 
-// 路由
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Views', 'index.html'));
 });
 
-// 启动服务器
+// Start server
 app.listen(PORT, () => {
-  console.log(`服务器运行在 http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });

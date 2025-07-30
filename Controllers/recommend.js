@@ -7,10 +7,11 @@ const cursor = db.getCursor();
 // 从stock表中获取每个source最新日期的记录，并计算(close-open)/close的前5个
 function getTopStocks(req, res) {
   // 构建SQL查询语句获取每个source的最新日期记录
+  // 修改SQL查询，将source改为source_name
   const getLatestDatesSql = `
-    SELECT source, MAX(date) as maxDate 
+    SELECT source_name, MAX(date) as maxDate 
     FROM stocks 
-    GROUP BY source
+    GROUP BY source_name
   `;
 
   // 执行查询获取最新日期
@@ -66,7 +67,8 @@ function getTopStocks(req, res) {
           }
         }
         
-        return `(source = '${record.source}' AND date = '${formattedDate}')`;
+        // 修改条件构建，将source改为source_name
+        return `(source_name = '${record.source_name}' AND date = '${formattedDate}')`;
       }).join(' OR ');
 
       // 查询最新的股票数据
@@ -85,7 +87,7 @@ function getTopStocks(req, res) {
     })
     .then(([stocks]) => {
       // 在这里打印查询结果
-      console.log('查询结果:', stocks);
+    //   console.log('查询结果:', stocks);
       res.json(stocks);
     })
     .catch(err => {

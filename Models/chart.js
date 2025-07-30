@@ -1,56 +1,170 @@
 // 图表相关的JavaScript代码
 document.addEventListener('DOMContentLoaded', () => {
-  // 获取DOM元素
-  const chartContainer = document.getElementById('chart-container');
-  
   // 存储当前选中的产品ID和时间范围
   let currentProductId = null;
   let currentTimeframe = '1m';
+  // 存储股票映射表
+  let stocksMap = {};
   
-  // 监听时间范围选择变化
-  const timeframeSelect = document.getElementById('chart-timeframe');
-  if (timeframeSelect) {
-    timeframeSelect.addEventListener('change', () => {
-      currentTimeframe = timeframeSelect.value;
-      if (currentProductId) {
-        fetchStockData(currentProductId, currentTimeframe);
-      }
-    });
-  }
+  // 初始化加载股票列表
+  loadStocksList();
   
-  // 从后端API获取股票数据
-  async function fetchStockData(stockId, timeframe = '1m') {
-    try {
-      // 获取股票名称
-      const stockName = getStockNameById(stockId);
-      if (!stockName) return;
+  // 使用事件委托为时间框选择器添加事件监听器
+  document.addEventListener('change', function(event) {
+    // 检查事件目标是否为时间框选择器
+    if (event.target && event.target.id === 'chart-timeframe') {
+      const selectedTimeframe = event.target.value;
+      console.log('时间范围已更改为:', selectedTimeframe);
       
-      // 获取K线数据
-      const response = await fetch(`/api/stocks/data?stock_name=${stockName}&timeframe=${timeframe}`);
-      if (!response.ok) throw new Error('获取数据失败');
+      // 获取当前选中的股票
+      const activeItem = document.querySelector('#collection-list li.active a');
+      let stockName = null;
+      
+      if (activeItem && activeItem.dataset.name) {
+        stockName = activeItem.dataset.name;
+        currentProductId = stockName;
+      } else if (currentProductId) {
+        stockName = currentProductId;
+      }
+      
+      if (stockName) {
+        console.log('正在使用新的时间范围重新获取数据:', stockName, selectedTimeframe);
+        currentTimeframe = selectedTimeframe;
+        fetchStockData(stockName, selectedTimeframe);
+      } else {
+        console.log('未选择股票，无法更新图表');
+        // 显示提示信息
+        const chartContainer = document.getElementById('chart-container');
+        if (chartContainer) {
+          const placeholder = chartContainer.querySelector('.chart-placeholder');
+          if (!placeholder) {
+            const newPlaceholder = document.createElement('div');
+            newPlaceholder.classList.add('chart-placeholder');
+            newPlaceholder.innerHTML = '<p>请先从左侧选择产品，然后再调整时间范围</p>';
+            
+            // 清空图表容器
+            const chartContent = chartContainer.querySelector('.chart-content');
+            if (chartContent) {
+              chartContent.remove();
+            }
+            
+            chartContainer.querySelector('.chart-header').after(newPlaceholder);
+          }
+        }
+      }
+    }
+  });
+  
+  // 从后端API获取股票列表
+  async function loadStocksList() {
+    try {
+      const response = await fetch('/api/stocks/list');
+      if (!response.ok) throw new Error('获取股票列表失败');
       
       const data = await response.json();
       
+      // 构建股票映射表
+      data.stocks.forEach((stock, index) => {
+        stocksMap[index + 1] = stock.name; // 使用索引+1作为ID
+      });
+      
+      console.log('股票列表加载成功:', stocksMap);
+    } catch (error) {
+      console.error('获取股票列表失败:', error);
+    }
+  }
+  
+  // 从后端API获取股票数据
+  // 从后端API获取股票数据
+  async function fetchStockData(stock_name, timeframe = '1m') {
+    try {
+      console.log("获取股票数据，参数:", { stock_name, timeframe });
+      // 不再需要通过ID获取股票名称
+      if (!stock_name) {
+        console.error('股票名称为空，无法获取数据');
+        return;
+      }
+      
+      // 获取K线数据
+      const url = `/api/stocks/data?stock_name=${encodeURIComponent(stock_name)}&timeframe=${encodeURIComponent(timeframe)}`;
+      console.log("请求URL:", url);
+      
+      // 添加时间戳防止缓存
+      const cacheBuster = `&_=${new Date().getTime()}`;
+      const response = await fetch(url + cacheBuster);
+      
+      console.log("K线数据响应状态:", response.status, response.statusText);
+      if (!response.ok) {
+        console.error('获取K线数据失败:', response.statusText);
+        throw new Error('获取数据失败');
+      }
+      
+      const data = await response.json();
+      console.log("获取到的K线数据长度:", Array.isArray(data) ? data.length : '非数组', data);
+      if (Array.isArray(data) && data.length === 0) {
+        console.warn('获取到的K线数据为空');
+      }
+      
       // 获取股票详情
-      const detailsResponse = await fetch(`/api/stocks/details?stock_name=${stockName}`);
-      if (!detailsResponse.ok) throw new Error('获取详情失败');
+      const detailsResponse = await fetch(`/api/stocks/details?stock_name=${encodeURIComponent(stock_name)}${cacheBuster}`);
+      console.log("详情响应状态:", detailsResponse.status, detailsResponse.statusText);
+      if (!detailsResponse.ok) {
+        console.error('获取股票详情失败:', detailsResponse.statusText);
+        throw new Error('获取详情失败');
+      }
       
       const details = await detailsResponse.json();
+      console.log("获取到的详情数据:", details);
       
-      // 绘制K线图
-      drawKLineChart(stockId, data, details);
+      // 绘制K线图 - 这里仍然需要一个ID用于UI交互，可以使用股票名称作为ID
+      drawKLineChart(stock_name, data, details);
       
       return { data, details };
     } catch (error) {
       console.error('获取股票数据失败:', error);
+      // 显示错误信息
+      const chartContainer = document.getElementById('chart-container');
+      if (chartContainer) {
+        const errorMsg = document.createElement('div');
+        errorMsg.classList.add('error-message');
+        errorMsg.textContent = `获取数据失败: ${error.message}`;
+        errorMsg.style.color = 'red';
+        errorMsg.style.padding = '20px';
+        errorMsg.style.textAlign = 'center';
+        
+        // 清空图表容器
+        const chartContent = chartContainer.querySelector('.chart-content');
+        if (chartContent) {
+          chartContent.remove();
+        }
+        
+        // 移除占位符
+        const placeholder = chartContainer.querySelector('.chart-placeholder');
+        if (placeholder) {
+          placeholder.remove();
+        }
+        
+        // 移除已有的错误信息
+        const existingError = chartContainer.querySelector('.error-message');
+        if (existingError) {
+          existingError.remove();
+        }
+        
+        chartContainer.querySelector('.chart-header').after(errorMsg);
+      }
       return null;
     }
   }
   
   // 根据ID获取股票名称
   function getStockNameById(id) {
-    // 这里使用映射表，实际项目中可能需要从后端获取
-    const stockMap = {
+    // 优先使用从后端获取的股票映射表
+    if (stocksMap[id]) {
+      return stocksMap[id];
+    }
+    
+    // 如果映射表未加载完成，使用备用的硬编码映射表
+    const fallbackStockMap = {
       '1': 'MSFT',    // 微软
       '2': 'TSLA',    // 特斯拉
       '3': 'AAPL',    // 苹果
@@ -70,15 +184,22 @@ document.addEventListener('DOMContentLoaded', () => {
       '17': 'FXI',    // 中证300指数
       '18': 'EWH'     // 恒生指数
     };
-    return stockMap[id] || null;
+    return fallbackStockMap[id] || null;
   }
   
   // 绘制K线图函数
-  function drawKLineChart(productId, kLineData, productDetails) {
+  function drawKLineChart(stock_name, kLineData, productDetails) {
     if (!kLineData || kLineData.length === 0) return;
     
     // 更新当前选中的产品ID
-    currentProductId = productId;
+    currentProductId = stock_name;
+    
+    // 获取图表容器 - 在使用时获取而不是在脚本开始时
+    const chartContainer = document.getElementById('chart-container');
+    if (!chartContainer) {
+      console.error('找不到图表容器元素 #chart-container');
+      return;
+    }
     
     // 清空图表容器
     const chartContent = chartContainer.querySelector('.chart-content');
@@ -98,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 创建图表标题
     const chartTitle = document.createElement('h3');
-    chartTitle.textContent = `${productDetails.name} 价格走势`;
+    chartTitle.textContent = `${productDetails.name} Trends`;
     chartTitle.style.marginBottom = '15px';
     chartTitle.style.color = 'var(--primary-color)';
     
@@ -137,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 高亮当前选中的产品
     document.querySelectorAll('#collection-list li a').forEach(item => {
-      if (item.dataset.id === productId) {
+      if (item.dataset.name === stock_name) { // 修改这里，使用data-name属性
         item.parentElement.classList.add('active');
       } else {
         item.parentElement.classList.remove('active');
@@ -146,12 +267,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // 绘制K线
+  // 绘制K线
   function drawKLines(data) {
     const width = 1000;
     const height = 300;
     const padding = 40;
-    const availableWidth = width - (padding * 2);
-    const availableHeight = height - (padding * 2);
+    // 增加左侧边距，为价格刻度文本留出更多空间
+    const leftPadding = 60; // 从40增加到60
+    const rightPadding = padding;
+    const topPadding = padding;
+    const bottomPadding = padding;
+    const availableWidth = width - (leftPadding + rightPadding);
+    const availableHeight = height - (topPadding + bottomPadding);
     
     // 找出最高价和最低价
     let minPrice = Infinity;
@@ -162,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
       maxPrice = Math.max(maxPrice, parseFloat(day.high));
     });
     
-    // 添加一些边距
+    // 添加一些边距，使图表不会太贴近边缘
     const pricePadding = (maxPrice - minPrice) * 0.1;
     minPrice -= pricePadding;
     maxPrice += pricePadding;
@@ -173,19 +300,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 绘制网格线和坐标轴
     let gridLines = `
-      <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#444" stroke-width="1" />
-      <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#444" stroke-width="1" />
+      <line x1="${leftPadding}" y1="${topPadding}" x2="${leftPadding}" y2="${height - bottomPadding}" stroke="#444" stroke-width="1" />
+      <line x1="${leftPadding}" y1="${height - bottomPadding}" x2="${width - rightPadding}" y2="${height - bottomPadding}" stroke="#444" stroke-width="1" />
     `;
     
     // 价格刻度
     const priceSteps = 5;
     for (let i = 0; i <= priceSteps; i++) {
       const price = minPrice + ((maxPrice - minPrice) * (i / priceSteps));
-      const y = height - padding - (price - minPrice) * yScale;
+      const y = height - bottomPadding - (price - minPrice) * yScale;
       
       gridLines += `
-        <line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
-        <text x="${padding - 5}" y="${y}" text-anchor="end" dominant-baseline="middle" fill="#CCC" font-size="12">${price.toFixed(2)}</text>
+        <line x1="${leftPadding}" y1="${y}" x2="${width - rightPadding}" y2="${y}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
+        <text x="${leftPadding - 10}" y="${y}" text-anchor="end" dominant-baseline="middle" fill="#CCC" font-size="12">${price.toFixed(2)}</text>
       `;
     }
     
@@ -193,13 +320,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateSteps = Math.min(5, data.length);
     for (let i = 0; i < dateSteps; i++) {
       const index = Math.floor((data.length - 1) * (i / (dateSteps - 1)));
-      const x = padding + (index * xScale);
+      const x = leftPadding + (index * xScale);
       
       const date = new Date(data[index].date).toISOString().split('T')[0];
       
       gridLines += `
-        <line x1="${x}" y1="${padding}" x2="${x}" y2="${height - padding}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
-        <text x="${x}" y="${height - padding + 15}" text-anchor="middle" fill="#CCC" font-size="12">${date}</text>
+        <line x1="${x}" y1="${topPadding}" x2="${x}" y2="${height - bottomPadding}" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
+        <text x="${x}" y="${height - bottomPadding + 15}" text-anchor="middle" fill="#CCC" font-size="12">${date}</text>
       `;
     }
     
@@ -207,14 +334,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let kLines = '';
     
     data.forEach((day, i) => {
-      const x = padding + (i * xScale);
+      const x = leftPadding + (i * xScale);
       const open = height - padding - (parseFloat(day.open) - minPrice) * yScale;
       const close = height - padding - (parseFloat(day.close) - minPrice) * yScale;
       const high = height - padding - (parseFloat(day.high) - minPrice) * yScale;
       const low = height - padding - (parseFloat(day.low) - minPrice) * yScale;
       
       // 确定颜色（涨或跌）
-      const color = parseFloat(day.close) >= parseFloat(day.open) ? '#D4AF37' : '#FF3D00';
+      const color = parseFloat(day.close) >= parseFloat(day.open) ? '#FF3D00' : '#4CAF50';
       
       // 绘制K线实体
       const rectHeight = Math.abs(close - open);
@@ -261,12 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
     popup.style.maxWidth = '500px';
     
     // 创建放大版图表
-    const enlargedChart = document.createElement('div');
-    enlargedChart.style.width = '100%';
-    enlargedChart.style.height = '200px';
-    enlargedChart.style.marginBottom = '15px';
-    enlargedChart.style.backgroundColor = '#1E1E1E';
-    enlargedChart.style.borderRadius = '4px';
+    // const enlargedChart = document.createElement('div');
+    // enlargedChart.style.width = '100%';
+    // enlargedChart.style.height = '200px';
+    // enlargedChart.style.marginBottom = '15px';
+    // enlargedChart.style.backgroundColor = '#1E1E1E';
+    // enlargedChart.style.borderRadius = '4px';
     
     // 创建SVG元素
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -370,7 +497,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 监听自定义事件，接收来自其他模块的绘制图表请求
   document.addEventListener('drawChart', (event) => {
-    const { productId } = event.detail;
-    fetchStockData(productId, currentTimeframe);
+    const { productId, stock_name, source, source_name } = event.detail;
+    console.log(productId, stock_name, source, source_name);
+    if (source_name) {
+      fetchStockData(source_name, currentTimeframe);
+    } else if (stock_name) {
+      fetchStockData(stock_name, currentTimeframe);
+    } else if (source) {  // 添加对 source 的处理
+      fetchStockData(source, currentTimeframe);
+    } else if (productId) {
+      // 如果传递的是productId，需要先转换为stock_name
+      const stockName = getStockNameById(productId);
+      fetchStockData(stockName, currentTimeframe);
+    }
   });
 });
