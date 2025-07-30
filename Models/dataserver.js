@@ -141,8 +141,15 @@ router.get('/users/:user_id/stocks/:symbol/quantity', async (req, res) => {
     // 获取用户指定股票的所有交易数据
     const trades = await stockData.getUserStockTrades(parseInt(user_id), symbol);
     
-    // 计算持有数量
-    const quantity = trades.reduce((sum, trade) => sum + trade.quantity, 0);
+    // 计算持有数量，根据action字段判断是买入还是卖出
+    const quantity = trades.reduce((sum, trade) => {
+      if (trade.action === 'buy') {
+        return sum + trade.quantity;
+      } else if (trade.action === 'sell') {
+        return sum - trade.quantity;
+      }
+      return sum;
+    }, 0);
     
     res.json({
       user_id: parseInt(user_id),
@@ -188,8 +195,15 @@ router.get('/users/:user_id/stocks/:symbol/value', async (req, res) => {
     // 获取用户指定股票的所有交易数据
     const trades = await stockData.getUserStockTrades(parseInt(user_id), symbol);
     
-    // 计算总市值
-    const value = trades.reduce((sum, trade) => sum + trade.total_amount, 0);
+    // 计算总市值，根据action字段判断是买入还是卖出
+    const value = trades.reduce((sum, trade) => {
+      if (trade.action === 'buy') {
+        return sum + trade.total_amount;
+      } else if (trade.action === 'sell') {
+        return sum - trade.total_amount;
+      }
+      return sum;
+    }, 0);
     
     res.json({
       user_id: parseInt(user_id),
@@ -270,10 +284,26 @@ router.get('/users/:user_id/stocks/:symbol/profit', async (req, res) => {
     
     // 获取用户指定股票的持有数量
     const trades = await stockData.getUserStockTrades(parseInt(user_id), symbol);
-    const quantity = trades.reduce((sum, trade) => sum + trade.quantity, 0);
+    // 计算持有数量，根据action字段判断是买入还是卖出
+    const quantity = trades.reduce((sum, trade) => {
+      if (trade.action === 'buy') {
+        return sum + trade.quantity;
+      } else if (trade.action === 'sell') {
+        return sum - trade.quantity;
+      }
+      return sum;
+    }, 0);
     
     // 获取用户指定股票的总市值
-    const value = trades.reduce((sum, trade) => sum + trade.total_amount, 0);
+    // 计算总市值，根据action字段判断是买入还是卖出
+    const value = trades.reduce((sum, trade) => {
+      if (trade.action === 'buy') {
+        return sum + trade.total_amount;
+      } else if (trade.action === 'sell') {
+        return sum - trade.total_amount;
+      }
+      return sum;
+    }, 0);
     
     // 获取股票现价
     const priceData = await stockData.getPriceDataBySymbolAndDays(symbol, 1);
