@@ -169,13 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
           dialogContent += `<li data-name="${stock.name}">
             <label class="stock-item">
               <input type="checkbox" class="stock-checkbox" data-name="${stock.name}">
-              <div class="stock-info">
-                <span class="stock-name">${stock.displayName}</span>
-                <div class="stock-details">
-                  <span class="stock-price">${priceDisplay}</span>
-                  <span class="stock-change ${changeInfo.className}">${changeInfo.formatted}</span>
-                </div>
-              </div>
+              <span class="stock-name">${stock.displayName}</span>
+              <span class="stock-price">${priceDisplay}</span>
+              <span class="stock-change ${changeInfo.className}">${changeInfo.formatted}</span>
             </label>
           </li>`;
         });

@@ -152,7 +152,7 @@ button {
 }
 
 .nav-section h3 {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   text-transform: uppercase;
   color: var(--text-light);
   margin-bottom: 15px;
@@ -168,7 +168,7 @@ button {
 }
 
 .collection-header h3 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-transform: uppercase;
   color: var(--text-light);
   margin: 0 !important;
@@ -195,17 +195,22 @@ button {
 }
 
 .sidebar-nav ul li.active a {
-  background-color: var(--primary-light);
-  color: var(--primary-dark);
+  background-color: rgba(212, 175, 55, 0.15);
+  color: var(--text-color);
+  border-left: 3px solid var(--primary-color);
+  padding-left: 7px;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 #collection-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  position: relative;
 }
 
 #collection-list li:last-child {
@@ -216,37 +221,69 @@ button {
   flex: 1;
   text-decoration: none;
   color: inherit;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-speed);
+}
+
+/* Collection list item hover and active states */
+#collection-list li a:hover {
+  background-color: rgba(212, 175, 55, 0.08);
+  transform: translateX(3px);
+}
+
+#collection-list li.active a,
+#collection-list li a.active {
+  background-color: rgba(212, 175, 55, 0.15);
+  border-left: 3px solid var(--primary-color);
+  padding-left: 9px;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+#collection-list li.active a .stock-name,
+#collection-list li a.active .stock-name {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+#collection-list li.active a .close-price,
+#collection-list li a.active .close-price {
+  color: var(--text-light);
 }
 
 /* Collection item stock info layout */
 .stock-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .stock-name {
   font-weight: 500;
-  color: var(--text-primary);
-  font-size: 0.9rem;
+  color: var(--text-color);
+  font-size: 1.1rem;
 }
 
 .price-info {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  font-size: 0.8rem;
+  gap: 12px;
+  font-size: 1rem;
 }
 
 .close-price {
   color: var(--text-light);
   font-weight: 400;
+  font-size: 1rem;
 }
 
 .change {
   font-weight: 500;
-  font-size: 0.75rem;
-  text-align: right;
+  font-size: 0.9rem;
+  text-align: left;
 }
 
 .change.positive {
@@ -467,14 +504,14 @@ button {
 
 /* 推荐列表样式 */
 #todays-picks-list li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 #todays-picks-list li a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border-radius: var(--border-radius-md);
   background-color: var(--medium-gray);
   transition: all var(--transition-speed);
@@ -491,12 +528,14 @@ button {
   flex: 1;
   text-align: left;
   font-weight: 500;
+  font-size: 1.1rem;
   margin-right: 20px;
 }
 
 /* 推荐列表中的百分比颜色 - 右对齐 */
 #todays-picks-list .change {
   font-weight: 600;
+  font-size: 1rem;
   text-align: right;
   flex-shrink: 0;
 }
@@ -609,12 +648,12 @@ button {
 }
 
 #todays-picks-list li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 #todays-picks-list li a {
   display: block;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border-radius: var(--border-radius-md);
   background-color: var(--medium-gray);
   transition: all var(--transition-speed);
@@ -637,14 +676,14 @@ button {
 }
 
 .section-header h2 {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: var(--text-color);
 }
 
 .section-header p {
   color: var(--text-light);
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .daily-recommendations {
@@ -675,20 +714,21 @@ button {
 }
 
 .product-info h3 {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 5px;
 }
 
 .price {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 500;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .change {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
+  margin-left: 8px;
 }
 
 .change.positive {
@@ -726,7 +766,7 @@ button {
 }
 
 .portfolio-header h3 {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   text-align: left;
 }
@@ -734,9 +774,9 @@ button {
 .allocation {
   background-color: var(--primary-light);
   color: var(--primary-dark);
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: var(--border-radius-sm);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-align: right;
 }
@@ -744,21 +784,30 @@ button {
 .portfolio-details {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  align-items: flex-end;
-  text-align: right;
+  gap: 8px;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .shares {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--text-light);
-  text-align: right;
+  text-align: left;
 }
 
 .value {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 600;
-  text-align: right;
+  text-align: left;
+  margin-right: 12px;
+}
+
+/* Portfolio change percentage styling */
+.portfolio-details .change {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  margin-top: 4px;
 }
 
 .chart-header {
@@ -862,12 +911,12 @@ button {
 }
 
 .modal-header h3 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
 .close-modal-btn {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: var(--text-light);
   cursor: pointer;
   transition: color var(--transition-speed);
@@ -890,7 +939,7 @@ button {
 }
 
 .product-basics h4 {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -898,22 +947,24 @@ button {
 .product-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 20px;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .stat-label {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: var(--text-light);
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .stat-value {
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
@@ -1862,7 +1913,7 @@ button {
 }
 
 .dialog-header h3 {
-  font-size: 1.4rem;
+  font-size: 1.5rem; /* Increased from 1.4rem for better readability */
   font-weight: 600;
   color: var(--text-color);
   margin: 0;
@@ -1925,10 +1976,10 @@ button {
   color: var(--text-light);
   font-size: 0.95rem;
   text-align: center;
-  padding: 12px 16px;
-  background: rgba(212, 175, 55, 0.08);
-  border-radius: 12px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 0; /* Removed padding */
+  background: transparent; /* Removed background */
+  border-radius: 0; /* Removed border radius */
+  border: none; /* Removed border */
 }
 
 .stock-list {
@@ -1954,6 +2005,8 @@ button {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  justify-content: space-between; /* This will space out the items */
+  gap: 20px; /* Add space between elements */
 }
 
 .stock-item::before {
@@ -1993,51 +2046,49 @@ button {
   accent-color: var(--primary-color);
   position: relative;
   z-index: 1;
+  flex-shrink: 0; /* Prevent checkbox from shrinking */
 }
 
-/* Stock info layout for dialog items */
-.stock-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+/* Dialog-specific styles for stock items */
+.dialog .stock-name {
+  font-weight: 600; /* Increased from 500 for better contrast */
+  color: var(--text-color);
+  font-size: 1.3rem; /* Increased from 1.1rem to make it larger */
+  text-align: left;
+  flex: 1; /* Take up available space */
   position: relative;
   z-index: 1;
 }
 
-.stock-name {
-  font-weight: 500;
-  color: var(--text-color);
-  font-size: 0.95rem;
-}
-
-.stock-details {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: auto;
-}
-
-.stock-price {
+/* Dialog-specific stock price styling */
+.dialog .stock-price {
   color: var(--text-light);
-  font-size: 0.9rem;
+  font-size: 1.1rem; /* Increased from 1rem for better readability */
   font-weight: 500;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0; /* Prevent price from shrinking */
+  margin-right: 16px; /* Add space between price and percentage */
 }
 
-.stock-change {
-  font-size: 0.85rem;
+/* Dialog-specific stock change styling */
+.dialog .stock-change {
+  font-size: 1.05rem; /* Increased from 0.95rem for better readability */
   font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 4px 8px; /* Increased padding for better visual presence */
+  border-radius: 6px; /* Slightly increased border radius */
   background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0; /* Prevent percentage from shrinking */
 }
 
-.stock-change.positive {
+.dialog .stock-change.positive {
   color: var(--positive);
   background: rgba(255, 61, 0, 0.1);
 }
 
-.stock-change.negative {
+.dialog .stock-change.negative {
   color: var(--negative);
   background: rgba(0, 200, 83, 0.1);
 }
