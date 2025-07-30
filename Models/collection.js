@@ -60,32 +60,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // 添加收藏
-    function addCollection(stockName) {
-      fetch('/api/collect/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: userId,
-          stock_name: stockName
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('添加收藏失败');
-        }
-        return response.text();
-      })
-      .then(() => {
-        // 重新获取收藏列表
-        fetchCollections();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert(`添加收藏失败: ${error.message}`);
-      });
-    }
+    // function addCollection(stockName) {
+    //   fetch('/api/collect/add', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       user_id: userId,
+    //       stock_name: stockName
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       throw new Error('添加收藏失败');
+    //     }
+    //     return response.text();
+    //   })
+    //   .then(() => {
+    //     // 重新获取收藏列表
+    //     fetchCollections();
+    //   })
+    //   .catch(error => {
+    //     console.error('Error:', error);
+    //     alert(`添加收藏失败: ${error.message}`);
+    //   });
+    // }
     
     // 删除收藏
     function deleteCollection(stockName) {
