@@ -9,64 +9,52 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初始化加载股票列表
   loadStocksList();
   
-  // 监听时间范围选择变化 - 直接在这里处理，不再嵌套DOMContentLoaded
-  setTimeout(() => {
-    const timeframeSelect = document.getElementById('chart-timeframe');
-    if (timeframeSelect) {
-      console.log('找到时间框选择器元素，准备添加事件监听器');
+  // 使用事件委托为时间框选择器添加事件监听器
+  document.addEventListener('change', function(event) {
+    // 检查事件目标是否为时间框选择器
+    if (event.target && event.target.id === 'chart-timeframe') {
+      const selectedTimeframe = event.target.value;
+      console.log('时间范围已更改为:', selectedTimeframe);
       
-      // 移除可能存在的旧事件监听器
-      const newTimeframeSelect = timeframeSelect.cloneNode(true);
-      timeframeSelect.parentNode.replaceChild(newTimeframeSelect, timeframeSelect);
+      // 获取当前选中的股票
+      const activeItem = document.querySelector('#collection-list li.active a');
+      let stockName = null;
       
-      // 添加新的事件监听器
-      newTimeframeSelect.addEventListener('change', function() {
-        const selectedTimeframe = this.value;
-        console.log('时间范围已更改为:', selectedTimeframe);
-        
-        // 获取当前选中的股票
-        const activeItem = document.querySelector('#collection-list li.active a');
-        let stockName = null;
-        
-        if (activeItem && activeItem.dataset.name) {
-          stockName = activeItem.dataset.name;
-          currentProductId = stockName;
-        } else if (currentProductId) {
-          stockName = currentProductId;
-        }
-        
-        if (stockName) {
-          console.log('正在使用新的时间范围重新获取数据:', stockName, selectedTimeframe);
-          currentTimeframe = selectedTimeframe;
-          fetchStockData(stockName, selectedTimeframe);
-        } else {
-          console.log('未选择股票，无法更新图表');
-          // 显示提示信息
-          const chartContainer = document.getElementById('chart-container');
-          if (chartContainer) {
-            const placeholder = chartContainer.querySelector('.chart-placeholder');
-            if (!placeholder) {
-              const newPlaceholder = document.createElement('div');
-              newPlaceholder.classList.add('chart-placeholder');
-              newPlaceholder.innerHTML = '<p>请先从左侧选择产品，然后再调整时间范围</p>';
-              
-              // 清空图表容器
-              const chartContent = chartContainer.querySelector('.chart-content');
-              if (chartContent) {
-                chartContent.remove();
-              }
-              
-              chartContainer.querySelector('.chart-header').after(newPlaceholder);
+      if (activeItem && activeItem.dataset.name) {
+        stockName = activeItem.dataset.name;
+        currentProductId = stockName;
+      } else if (currentProductId) {
+        stockName = currentProductId;
+      }
+      
+      if (stockName) {
+        console.log('正在使用新的时间范围重新获取数据:', stockName, selectedTimeframe);
+        currentTimeframe = selectedTimeframe;
+        fetchStockData(stockName, selectedTimeframe);
+      } else {
+        console.log('未选择股票，无法更新图表');
+        // 显示提示信息
+        const chartContainer = document.getElementById('chart-container');
+        if (chartContainer) {
+          const placeholder = chartContainer.querySelector('.chart-placeholder');
+          if (!placeholder) {
+            const newPlaceholder = document.createElement('div');
+            newPlaceholder.classList.add('chart-placeholder');
+            newPlaceholder.innerHTML = '<p>请先从左侧选择产品，然后再调整时间范围</p>';
+            
+            // 清空图表容器
+            const chartContent = chartContainer.querySelector('.chart-content');
+            if (chartContent) {
+              chartContent.remove();
             }
+            
+            chartContainer.querySelector('.chart-header').after(newPlaceholder);
           }
         }
-      });
-      
-      console.log('时间框选择器事件监听器添加完成');
-    } else {
-      console.error('未找到时间框选择器元素 #chart-timeframe');
+      }
     }
-  }, 1000); // 延迟1秒确保DOM完全加载
+  });
+  
   // 从后端API获取股票列表
   async function loadStocksList() {
     try {
