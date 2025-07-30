@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 即使没有投资组合项目，也至少显示现金余额
       const pieData = [
         {
-          name: '现金余额',
+          name: 'Cash Balance',
           value: balance,
           color: '#4CAF50'
         }
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 生成饼图数据
     const pieData = [
       {
-        name: '现金余额',
+        name: 'Cash Balance',
         value: balance,
         color: '#4CAF50'
       }
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.fillStyle = '#D4AF37'; // 金色文字
           ctx.fillText(text, textX, textY);
           
-          const subText = '总资产';
+          const subText = 'Total Assets';
           const subTextX = Math.round((width - ctx.measureText(subText).width) / 2);
           const subTextY = height / 2 + 20;
           

@@ -95,11 +95,20 @@ button {
 
 .nav-section {
   margin-bottom: 30px;
-  padding: 0 20px;
+  padding: 15px 20px;
+  background-color: transparent;
+  border-radius: var(--border-radius-md);
+  border: 1px solid transparent;
+  transition: all var(--transition-speed);
+}
+
+.nav-section:hover {
+  background-color: var(--dark-gray);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-section h3 {
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   text-transform: uppercase;
   color: var(--text-light);
   margin-bottom: 15px;
@@ -115,11 +124,12 @@ button {
 }
 
 .collection-header h3 {
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   text-transform: uppercase;
   color: var(--text-light);
-  margin-bottom: 0;
+  margin: 0 !important;
   letter-spacing: 1px;
+  flex-grow: 1;
 }
 
 .sidebar-nav ul li {
@@ -412,11 +422,20 @@ button {
 
 .nav-section {
   margin-bottom: 30px;
-  padding: 0 20px;
+  padding: 15px 20px;
+  background-color: transparent;
+  border-radius: var(--border-radius-md);
+  border: 1px solid transparent;
+  transition: all var(--transition-speed);
+}
+
+.nav-section:hover {
+  background-color: var(--dark-gray);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-section h3 {
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   text-transform: uppercase;
   color: var(--text-light);
   margin-bottom: 15px;
@@ -433,16 +452,42 @@ button {
 }
 
 #todays-picks-list li a {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 8px 12px;
   border-radius: var(--border-radius-md);
   background-color: var(--medium-gray);
   transition: all var(--transition-speed);
+  width: 100%;
 }
 
 #todays-picks-list li a:hover {
   background-color: var(--light-gray);
   transform: translateX(5px);
+}
+
+/* 股票名称样式 - 左对齐 */
+#todays-picks-list .stock-name {
+  flex: 1;
+  text-align: left;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+/* 推荐列表中的百分比颜色 - 右对齐 */
+#todays-picks-list .change {
+  font-weight: 600;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+#todays-picks-list .change.positive {
+  color: var(--positive);
+}
+
+#todays-picks-list .change.negative {
+  color: var(--negative);
 }
 
 .search-bar {
@@ -970,7 +1015,7 @@ button {
 }
 
 .login-header .logo h1 {
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   font-weight: 600;
   color: var(--primary-color);
 }
@@ -1528,6 +1573,11 @@ button {
   border-radius: var(--border-radius-md);
   font-weight: 500;
   transition: all var(--transition-speed);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: auto;
 }
 
 #add-collection:hover {

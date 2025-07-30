@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fetch(`/api/collect/get?user_id=${userId}`)
         .then(response => {
           if (!response.ok) {
-            throw new Error('获取收藏失败');
+            throw new Error('Failed to get favorites');
           }
           return response.json();
         })
@@ -30,14 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
           console.error('Error:', error);
-          collectionList.innerHTML = `<li class="error-message">加载失败: ${error.message}</li>`;
+          collectionList.innerHTML = `<li class="error-message">Loading failed: ${error.message}</li>`;
         });
     }
     
     // 显示收藏列表
     function displayCollections(stockNames) {
       if (!stockNames || stockNames.length === 0) {
-        collectionList.innerHTML = '<li class="empty-message">暂无收藏</li>';
+        collectionList.innerHTML = '<li class="empty-message">No favorites yet</li>';
         return;
       }
       
@@ -59,34 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
       addEventListeners();
     }
     
-    // 添加收藏
-    // function addCollection(stockName) {
-    //   fetch('/api/collect/add', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       user_id: userId,
-    //       stock_name: stockName
-    //     })
-    //   })
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('添加收藏失败');
-    //     }
-    //     return response.text();
-    //   })
-    //   .then(() => {
-    //     // 重新获取收藏列表
-    //     fetchCollections();
-    //   })
-    //   .catch(error => {
-    //     console.error('Error:', error);
-    //     alert(`添加收藏失败: ${error.message}`);
-    //   });
-    // }
-    
     // 删除收藏
     function deleteCollection(stockName) {
       fetch('/api/collect/delete', {
@@ -101,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(response => {
         if (!response.ok) {
-          throw new Error('删除收藏失败');
+          throw new Error('Failed to delete favorite');
         }
         return response.text();
       })
@@ -111,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(error => {
         console.error('Error:', error);
-        alert(`删除收藏失败: ${error.message}`);
+        alert(`Failed to delete favorite: ${error.message}`);
       });
     }
     
@@ -120,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fetch(`/api/collect/stocks?user_id=${userId}`)
         .then(response => {
           if (!response.ok) {
-            throw new Error('获取股票列表失败');
+            throw new Error('Failed to get stock list');
           }
           return response.json();
         })
@@ -129,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
           console.error('Error:', error);
-          alert(`获取股票列表失败: ${error.message}`);
+          alert(`Failed to get stock list: ${error.message}`);
         });
     }
     
@@ -149,16 +121,16 @@ document.addEventListener('DOMContentLoaded', () => {
       
       let dialogContent = `
         <div class="dialog-header">
-          <h3>添加收藏</h3>
+          <h3>Add to Favorites</h3>
           <button id="close-dialog">×</button>
         </div>
         <div class="dialog-content">
       `;
       
       if (!stocks || stocks.length === 0) {
-        dialogContent += '<p>没有可添加的股票</p>';
+        dialogContent += '<p>No stocks available to add</p>';
       } else {
-        dialogContent += '<div class="selection-info">请选择要添加的股票（可多选）</div>';
+        dialogContent += '<div class="selection-info">Please select stocks to add (multiple selection allowed)</div>';
         dialogContent += '<ul class="stock-list">';
         stocks.forEach(stock => {
           dialogContent += `<li data-name="${stock.name}">
@@ -174,8 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
       dialogContent += `
         </div>
         <div class="dialog-footer">
-          <button id="cancel-selection" class="btn">取消</button>
-          <button id="confirm-selection" class="btn primary">确认添加</button>
+          <button id="cancel-selection" class="btn">Cancel</button>
+          <button id="confirm-selection" class="btn primary">Add</button>
         </div>
       `;
       
@@ -200,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedStocks = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.name);
         
         if (selectedStocks.length === 0) {
-          alert('请至少选择一个股票');
+          alert('Please select at least one stock');
           return;
         }
         
@@ -219,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(response => {
               if (!response.ok) {
-                throw new Error(`添加 ${stockName} 失败`);
+                throw new Error(`Failed to add ${stockName}`);
               }
               return response.text();
             })
@@ -237,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
           })
           .catch(error => {
             console.error('Error:', error);
-            alert(`添加收藏失败: ${error.message}`);
+            alert(`Failed to add to favorites: ${error.message}`);
           });
       });
       
@@ -268,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // 如果按钮已经激活，则取消激活
           if (button.classList.contains('active')) {
             button.classList.remove('active');
-            button.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2em">☆</span>';
+            button.innerHTML = '☆';
             // 将项目移到列表底部
             collectionList.appendChild(listItem);
           } else {
@@ -284,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (e.target.classList.contains('delete-btn')) {
           e.stopPropagation();
           const stockName = e.target.dataset.name;
-          if (confirm(`确定要删除 ${stockName} 吗？`)) {
+          if (confirm(`Are you sure you want to delete ${stockName}?`)) {
             deleteCollection(stockName);
           }
         }
