@@ -7,9 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   portfolioItems.forEach(item => {
     if (!item.classList.contains('add-new-item')) {
       item.addEventListener('click', () => {
-        const productId = item.dataset.id;
-        // 使用自定义事件通知图表模块绘制图表
-        const event = new CustomEvent('drawChart', { detail: { productId } });
+        const stock_name = getStockNameById(item.dataset.id); // 需要添加这个函数
+        const event = new CustomEvent('drawChart', { detail: { stock_name } });
         document.dispatchEvent(event);
       });
     }
@@ -32,3 +31,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// 根据ID获取股票名称
+function getStockNameById(id) {
+  // 这里使用映射表，实际项目中可能需要从后端获取
+  const stockMap = {
+    '1': 'MSFT',    // 微软
+    '2': 'TSLA',    // 特斯拉
+    '3': 'AAPL',    // 苹果
+    '4': 'NVDA',    // 英伟达
+    '5': 'AMZN',    // 亚马逊
+    '6': 'GOOGL',   // 谷歌
+    '7': 'META',    // Facebook(Meta)
+    '8': 'BIDU',    // 百度
+    '9': 'BABA',    // 阿里巴巴
+    '10': 'TCEHY',  // 腾讯
+    '11': 'TSM',    // 台积电
+    '12': 'SSNLF',  // 三星
+    '13': 'SPY',    // 标普500指数
+    '14': 'DIA',    // 道琼斯指数
+    '15': 'QQQ',    // 纳斯达克指数
+    '16': 'IWM',    // 罗素2000指数
+    '17': 'FXI',    // 中证300指数
+    '18': 'EWH'     // 恒生指数
+  };
+  return stockMap[id] || null;
+}

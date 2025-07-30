@@ -1,11 +1,13 @@
 // 图表相关的JavaScript代码
 document.addEventListener('DOMContentLoaded', () => {
-  // 获取DOM元素
-  const chartContainer = document.getElementById('chart-container');
-  
   // 存储当前选中的产品ID和时间范围
   let currentProductId = null;
   let currentTimeframe = '1m';
+  // 存储股票映射表
+  let stocksMap = {};
+  
+  // 初始化加载股票列表
+  loadStocksList();
   
   // 监听时间范围选择变化
   const timeframeSelect = document.getElementById('chart-timeframe');
@@ -18,27 +20,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // 从后端API获取股票数据
-  async function fetchStockData(stockId, timeframe = '1m') {
+  // 从后端API获取股票列表
+  async function loadStocksList() {
     try {
-      // 获取股票名称
-      const stockName = getStockNameById(stockId);
-      if (!stockName) return;
-      
-      // 获取K线数据
-      const response = await fetch(`/api/stocks/data?stock_name=${stockName}&timeframe=${timeframe}`);
-      if (!response.ok) throw new Error('获取数据失败');
+      const response = await fetch('/api/stocks/list');
+      if (!response.ok) throw new Error('获取股票列表失败');
       
       const data = await response.json();
       
+      // 构建股票映射表
+      data.stocks.forEach((stock, index) => {
+        stocksMap[index + 1] = stock.name; // 使用索引+1作为ID
+      });
+      
+      console.log('股票列表加载成功:', stocksMap);
+    } catch (error) {
+      console.error('获取股票列表失败:', error);
+    }
+  }
+  
+  // 从后端API获取股票数据
+  async function fetchStockData(stock_name, timeframe = '1m') {
+    try {
+      console.log("获取股票数据，参数:", { stock_name, timeframe });
+      // 不再需要通过ID获取股票名称
+      if (!stock_name) return;
+      
+      // 获取K线数据
+      const response = await fetch(`/api/stocks/data?stock_name=${stock_name}&timeframe=${timeframe}`);
+      console.log("K线数据响应状态:", response.status, response.statusText);
+      if (!response.ok) throw new Error('获取数据失败');
+      
+      const data = await response.json();
+      console.log("获取到的K线数据:", data);
+      console.log("K线数据长度:", Array.isArray(data) ? data.length : '非数组');
+      
       // 获取股票详情
-      const detailsResponse = await fetch(`/api/stocks/details?stock_name=${stockName}`);
+      const detailsResponse = await fetch(`/api/stocks/details?stock_name=${stock_name}`);
+      console.log("详情响应状态:", detailsResponse.status, detailsResponse.statusText);
       if (!detailsResponse.ok) throw new Error('获取详情失败');
       
       const details = await detailsResponse.json();
+      console.log("获取到的详情数据:", details);
       
-      // 绘制K线图
-      drawKLineChart(stockId, data, details);
+      // 绘制K线图 - 这里仍然需要一个ID用于UI交互，可以使用股票名称作为ID
+      drawKLineChart(stock_name, data, details);
       
       return { data, details };
     } catch (error) {
@@ -49,8 +75,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 根据ID获取股票名称
   function getStockNameById(id) {
-    // 这里使用映射表，实际项目中可能需要从后端获取
-    const stockMap = {
+    // 优先使用从后端获取的股票映射表
+    if (stocksMap[id]) {
+      return stocksMap[id];
+    }
+    
+    // 如果映射表未加载完成，使用备用的硬编码映射表
+    const fallbackStockMap = {
       '1': 'MSFT',    // 微软
       '2': 'TSLA',    // 特斯拉
       '3': 'AAPL',    // 苹果
@@ -70,15 +101,22 @@ document.addEventListener('DOMContentLoaded', () => {
       '17': 'FXI',    // 中证300指数
       '18': 'EWH'     // 恒生指数
     };
-    return stockMap[id] || null;
+    return fallbackStockMap[id] || null;
   }
   
   // 绘制K线图函数
-  function drawKLineChart(productId, kLineData, productDetails) {
+  function drawKLineChart(stock_name, kLineData, productDetails) {
     if (!kLineData || kLineData.length === 0) return;
     
     // 更新当前选中的产品ID
-    currentProductId = productId;
+    currentProductId = stock_name;
+    
+    // 获取图表容器 - 在使用时获取而不是在脚本开始时
+    const chartContainer = document.getElementById('chart-container');
+    if (!chartContainer) {
+      console.error('找不到图表容器元素 #chart-container');
+      return;
+    }
     
     // 清空图表容器
     const chartContent = chartContainer.querySelector('.chart-content');
@@ -137,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 高亮当前选中的产品
     document.querySelectorAll('#collection-list li a').forEach(item => {
-      if (item.dataset.id === productId) {
+      if (item.dataset.name === stock_name) { // 修改这里，使用data-name属性
         item.parentElement.classList.add('active');
       } else {
         item.parentElement.classList.remove('active');
@@ -214,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const low = height - padding - (parseFloat(day.low) - minPrice) * yScale;
       
       // 确定颜色（涨或跌）
-      const color = parseFloat(day.close) >= parseFloat(day.open) ? '#D4AF37' : '#FF3D00';
+      const color = parseFloat(day.close) >= parseFloat(day.open) ? '#FF3D00' : '#4CAF50';
       
       // 绘制K线实体
       const rectHeight = Math.abs(close - open);
@@ -261,12 +299,12 @@ document.addEventListener('DOMContentLoaded', () => {
     popup.style.maxWidth = '500px';
     
     // 创建放大版图表
-    const enlargedChart = document.createElement('div');
-    enlargedChart.style.width = '100%';
-    enlargedChart.style.height = '200px';
-    enlargedChart.style.marginBottom = '15px';
-    enlargedChart.style.backgroundColor = '#1E1E1E';
-    enlargedChart.style.borderRadius = '4px';
+    // const enlargedChart = document.createElement('div');
+    // enlargedChart.style.width = '100%';
+    // enlargedChart.style.height = '200px';
+    // enlargedChart.style.marginBottom = '15px';
+    // enlargedChart.style.backgroundColor = '#1E1E1E';
+    // enlargedChart.style.borderRadius = '4px';
     
     // 创建SVG元素
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -370,7 +408,16 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 监听自定义事件，接收来自其他模块的绘制图表请求
   document.addEventListener('drawChart', (event) => {
-    const { productId } = event.detail;
-    fetchStockData(productId, currentTimeframe);
+    const { productId, stock_name, source } = event.detail;
+    console.log(productId, stock_name, source);
+    if (stock_name) {
+      fetchStockData(stock_name, currentTimeframe);
+    } else if (source) {  // 添加对 source 的处理
+      fetchStockData(source, currentTimeframe);
+    } else if (productId) {
+      // 如果传递的是productId，需要先转换为stock_name
+      const stockName = getStockNameById(productId);
+      fetchStockData(stockName, currentTimeframe);
+    }
   });
 });

@@ -28,6 +28,7 @@ function initRecommendation() {
         throw new Error('获取推荐股票失败');
       }
       const data = await response.json();
+      console.log(data);
       return data;
     } catch (error) {
       console.error('获取推荐股票失败:', error);
@@ -71,17 +72,26 @@ function initRecommendation() {
       const link = document.createElement('a');
       link.href = '#';
       link.dataset.id = index;
-      link.dataset.source = stock.source_name;
-      link.textContent = `${stock.source_name} ${formattedPriceChange}`;
+      link.dataset.source = stock.source;
+      link.textContent = `${stock.source} ${formattedPriceChange}`;
       
       // 添加点击事件
       link.addEventListener('click', (e) => {
         e.preventDefault();
+        
+        // 调试输出
+        console.log('点击推荐项:', stock);
+        console.log('source_name:', stock.source_name);
+        
+        // 确保 source_name 存在
+        const stockName = stock.source_name || stock.stock_name || `stock_${index}`;
+        
         // 使用自定义事件通知图表模块绘制图表
         const event = new CustomEvent('drawChart', { 
           detail: { 
             productId: index,
-            source: stock.source_name,
+            stock_name: stock.source, // 使用 stock.source 而不是 stock.source_name
+            source: stock.source,
             priceChange: formattedPriceChange
           } 
         });
