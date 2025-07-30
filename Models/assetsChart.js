@@ -22,16 +22,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // 关闭浮窗
   if (closeAssetsChartBtn) {
     closeAssetsChartBtn.addEventListener('click', () => {
-      assetsChartOverlay.style.display = 'none';
+      closeAssetsChart();
     });
   }
   
   // 点击浮窗外部关闭
   window.addEventListener('click', (e) => {
     if (e.target === assetsChartOverlay) {
-      assetsChartOverlay.style.display = 'none';
+      closeAssetsChart();
     }
   });
+  
+  // 关闭资产图表浮窗
+  function closeAssetsChart() {
+    assetsChartOverlay.style.display = 'none';
+    
+    // 重置状态
+    const assetsChartMain = document.querySelector('.assets-chart-main');
+    const assetsListSection = document.querySelector('.assets-list-section');
+    
+    if (assetsChartMain) {
+      assetsChartMain.classList.remove('collapsed');
+    }
+    if (assetsListSection) {
+      assetsListSection.classList.remove('expanded');
+    }
+  }
   
   // 显示资产饼图
   function showAssetsChart() {
@@ -169,6 +185,65 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 显示浮窗
     assetsChartOverlay.style.display = 'flex';
+    
+    // 添加滚动监听器
+    setTimeout(() => {
+      setupScrollBehavior();
+    }, 100);
+  }
+  
+  // 设置滚动行为
+  function setupScrollBehavior() {
+    const assetsListElement = document.getElementById('assets-list');
+    const assetsChartMain = document.querySelector('.assets-chart-main');
+    const assetsListSection = document.querySelector('.assets-list-section');
+    
+    if (!assetsListElement || !assetsChartMain || !assetsListSection) return;
+    
+    let scrollTimeout;
+    let isExpanded = false;
+    
+    assetsListElement.addEventListener('scroll', () => {
+      const scrollTop = assetsListElement.scrollTop;
+      const scrollHeight = assetsListElement.scrollHeight;
+      const clientHeight = assetsListElement.clientHeight;
+      const scrollThreshold = 30; // Pixels to scroll before triggering
+      const maxScroll = scrollHeight - clientHeight;
+      
+      // Clear any existing timeout
+      clearTimeout(scrollTimeout);
+      
+      // Calculate scroll progress (0 to 1)
+      const scrollProgress = Math.min(scrollTop / Math.max(scrollThreshold, 1), 1);
+      
+      // Determine if we should expand or collapse
+      const shouldExpand = scrollTop > scrollThreshold;
+      
+      if (shouldExpand && !isExpanded) {
+        // Scrolling down - collapse top section and expand list
+        assetsChartMain.classList.add('collapsed');
+        assetsListSection.classList.add('expanded');
+        isExpanded = true;
+      } else if (!shouldExpand && isExpanded) {
+        // At top or scrolling up - restore original state
+        assetsChartMain.classList.remove('collapsed');
+        assetsListSection.classList.remove('expanded');
+        isExpanded = false;
+      }
+      
+      // Update chart on scroll end to maintain responsiveness
+      scrollTimeout = setTimeout(() => {
+        if (pieChart) {
+          pieChart.resize();
+        }
+      }, 100);
+    });
+    
+    // Also handle mouse wheel for smoother experience
+    assetsListElement.addEventListener('wheel', (e) => {
+      // Allow natural scrolling behavior
+      e.stopPropagation();
+    }, { passive: true });
   }
   
   // 绘制饼图
