@@ -94,5 +94,3 @@ module.exports = {
     DeleteCollect,
     GetAllStocks
 };
-
-
