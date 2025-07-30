@@ -11,7 +11,7 @@ const routes = require('./Routes/route');
 const app = express();
 
 // 设置端口
-const PORT = process.env.PORT || 2121;
+const PORT = process.env.PORT || 2345;
 
 // 中间件
 app.use(bodyParser.json());
