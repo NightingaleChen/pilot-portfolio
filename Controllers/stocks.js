@@ -144,8 +144,46 @@ function GetStockDetails(req, res) {
     });
 }
 
+// 获取股票ID（根据股票名称获取最新日期的股票ID）
+function GetStockId(req, res) {
+  const { stock_name } = req.query;
+  
+  if (!stock_name) {
+    return res.status(400).json({ error: 'stock_name parameter is required' });
+  }
+  
+  // 获取指定股票名称的最新记录的ID
+  const sql = `
+    SELECT id FROM stocks 
+    WHERE source_name = ? 
+    ORDER BY date DESC 
+    LIMIT 1
+  `;
+  
+  console.log('执行SQL查询:', sql.replace('?', `'${stock_name}'`));
+  console.log('查询参数:', { stock_name });
+  
+  cursor.execute(sql, [stock_name])
+    .then(([rows]) => {
+      if (rows.length === 0) {
+        console.log(`未找到股票: ${stock_name}`);
+        return res.status(404).json({ error: 'Stock not found' });
+      }
+      
+      const stockId = rows[0].id;
+      console.log('获取到的股票ID:', stockId);
+      
+      res.json({ id: stockId });
+    })
+    .catch(err => {
+      console.error('获取股票ID失败:', err);
+      res.status(500).send('Error getting stock ID: ' + err.message);
+    });
+}
+
 module.exports = {
   GetStocks,
   GetStockData,
-  GetStockDetails
+  GetStockDetails,
+  GetStockId
 };
