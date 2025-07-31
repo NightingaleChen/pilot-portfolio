@@ -47,9 +47,6 @@ document.addEventListener('componentsLoaded', () => {
 });
 
 // 初始化应用
-// 在 initializeApp 函数外部声明全局变量
-let collectionItems;
-
 function initializeApp() {
   // 获取DOM元素
   const collectionList = document.getElementById('collection-list');
@@ -367,17 +364,12 @@ function drawKLineChart(productId) {
   // 语言切换按钮 - 已移除
   // 原语言切换功能已移除
   
-  // 修改第381行附近的代码，将alert替换为调用showAddItemOverlay函数
   // Create new project button click event - Future backend API integration for adding new projects
   const addNewItemButton = document.querySelector('.add-new-item');
   if (addNewItemButton) {
     addNewItemButton.addEventListener('click', () => {
-      // 调用新项目功能
-      if (typeof showAddItemOverlay === 'function') {
-        showAddItemOverlay();
-      } else {
-        console.error('showAddItemOverlay function not found. Please ensure newprojects.js is loaded.');
-      }
+      // Add logic for opening new project form or dialog here
+      alert('Add new project feature coming soon!');
     });
   }
   
@@ -408,43 +400,33 @@ function drawKLineChart(productId) {
     }
   });
   
-  // 删除或注释掉这些行（大约在第520行和第523行）：
-  // closeModalBtn.addEventListener('click', closeProductModal);
+  closeModalBtn.addEventListener('click', closeProductModal);
   
-  // 删除或注释掉这些行：
-  // window.addEventListener('click', (e) => {
-  //   if (e.target === productModal) {
-  //     closeProductModal();
-  //   }
-  // });
+  // 点击模态框外部关闭
+  window.addEventListener('click', (e) => {
+    if (e.target === productModal) {
+      closeProductModal();
+    }
+  });
   
   // 搜索功能 - 将来与后端API交互进行搜索
   searchInput.addEventListener('input', () => {
     searchProducts(searchInput.value);
   });
   
-  // 初始化今日推荐卡片函数定义
+  // 初始化今日推荐卡片
+  initTodaysPicks();
+  
+  // 初始化今日推荐卡片
   function initTodaysPicks() {
     const container = document.getElementById('todays-picks');
     // 检查元素是否存在
     if (!container) {
-      console.warn('找不到todays-picks元素，可能组件尚未加载完成，将在500ms后重试');
-      // 延迟重试，但限制重试次数
-      if (!initTodaysPicks.retryCount) {
-        initTodaysPicks.retryCount = 0;
-      }
-      if (initTodaysPicks.retryCount < 10) { // 最多重试10次
-        initTodaysPicks.retryCount++;
-        setTimeout(initTodaysPicks, 500);
-      } else {
-        console.error('todays-picks元素加载超时，停止重试');
-      }
+      console.error('找不到todays-picks元素，可能组件尚未加载完成');
+      // 延迟重试
+      setTimeout(initTodaysPicks, 500);
       return;
     }
-    
-    // 重置重试计数
-    initTodaysPicks.retryCount = 0;
-    
     container.innerHTML = '';
     
     // 确保productData已定义
@@ -457,36 +439,37 @@ function drawKLineChart(productId) {
     const sortedProducts = Object.keys(productData).sort((a, b) => {
       const changeA = parseFloat(productData[a].change.replace('%', '').replace('+', ''));
       const changeB = parseFloat(productData[b].change.replace('%', '').replace('+', ''));
-      return changeB - changeA;
+      return changeB - changeA; // 已经是降序排列
     });
     
-    // 取前3个产品
-    const topProducts = sortedProducts.slice(0, 3);
-    
-    topProducts.forEach(productId => {
-      const product = productData[productId];
+    // 创建卡片
+    sortedProducts.forEach(id => {
+      const product = productData[id];
       const card = document.createElement('div');
-      card.className = 'recommendation-card';
+      card.className = 'product-card';
+      card.dataset.id = id;
+      
       card.innerHTML = `
-        <h4>${product.name}</h4>
-        <p class="price">${product.price}</p>
-        <p class="change positive">${product.change}</p>
+        <div class="product-info">
+          <h3>${product.name}</h3>
+          <p class="price">${product.price}</p>
+          <p class="change positive">${product.change}</p>
+        </div>
+        <div class="product-chart">
+          <svg width="100" height="40" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 30L5 28L10 32L15 25L20 28L25 20L30 22L35 18L40 15L45 18L50 10L55 15L60 12L65 15L70 8L75 12L80 5L85 10L90 2L95 5L100 0" stroke="#D4AF37" stroke-width="2"/>
+          </svg>
+        </div>
       `;
       
-      // 添加点击事件
       card.addEventListener('click', () => {
-        // 触发绘制图表事件
-        const event = new CustomEvent('drawChart', { 
-          detail: { stock_name: getStockNameById(productId) } 
-        });
-        document.dispatchEvent(event);
+        drawKLineChart(id);
       });
       
       container.appendChild(card);
     });
   }
 };
-  // 移动 collectionItems 的事件监听器到函数内部
   collectionItems.forEach(item => {
     item.addEventListener('click', (e) => {
       if (e.target.tagName !== 'BUTTON') {
@@ -495,8 +478,6 @@ function drawKLineChart(productId) {
       }
     });
   });
-  // 删除第473行的重复代码
-  // collectionItems.forEach(item => { ... }); // 删除这部分
   
   // 点击推荐项目 - 将来从后端API获取详细数据
   document.querySelectorAll('#todays-picks-list li').forEach(item => {
