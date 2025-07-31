@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!userData) return;
     
     const user = JSON.parse(userData);
-    const balance = parseFloat(user.balance.replace(/[^0-9.-]+/g, ''));
+    const balance = parseFloat(user.cash || 0);
     
     // 获取投资组合数据
     const portfolioItems = document.querySelectorAll('.portfolio-item');

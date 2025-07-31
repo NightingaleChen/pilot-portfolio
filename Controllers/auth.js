@@ -42,8 +42,8 @@ const Login = async (req, res) => {
       username: username,
       firstname: user.firstname,
       lastname: user.lastname,
-      balance: user.cash.toFixed(2),
-      totalAssets: totalAssets.toFixed(2),
+      balance: "*******",
+      totalAssets: "*******",
       cash: user.cash,
       email: user.email,
       phone_number: user.phone_number,
@@ -93,8 +93,8 @@ const GetUserInfo = async (req, res) => {
       id: user.id,
       firstname: user.firstname,
       lastname: user.lastname,
-      balance: user.cash.toFixed(2),
-      totalAssets: totalAssets.toFixed(2),
+      balance: "*******",
+      totalAssets: "*******",
       cash: user.cash,
       email: user.email,
       phone_number: user.phone_number,
@@ -141,8 +141,8 @@ const RefreshUserBalance = async (req, res) => {
     }
     
     return res.json({
-      balance: cash.toFixed(2),
-      totalAssets: totalAssets.toFixed(2),
+      balance: "*******",
+      totalAssets: "*******",
       cash: cash
     });
     
