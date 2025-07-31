@@ -63,7 +63,7 @@ button {
 
 /* 侧边栏样式 */
 .sidebar {
-  width: 260px;
+  width: 270px;
   background-color: var(--dark-gray);
   border-right: 1px solid var(--medium-gray);
   display: flex;

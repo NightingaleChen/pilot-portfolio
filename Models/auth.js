@@ -53,9 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 显示用户信息的函数
   const displayUserInfo = (user) => {
-    // Use actual cash balance from database
-    userBalance.textContent = `$${user.balance || user.cash}`;
-    userTotalAssets.textContent = `$${user.totalAssets}`;
+    // Use masked values for security in the top bar
+    userBalance.textContent = `*****`;
+    userTotalAssets.textContent = `*****`;
     userName.textContent = `${user.firstname} ${user.lastname}`;
     userAvatar.src = user.avatar || 'path/to/default/avatar.png';
     
@@ -86,17 +86,17 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const balanceData = await response.json();
       
-      // Update display
-      userBalance.textContent = `$${balanceData.balance}`;
-      userTotalAssets.textContent = `$${balanceData.totalAssets}`;
+      // Keep top bar display masked for security
+      userBalance.textContent = `*****`;
+      userTotalAssets.textContent = `*****`;
       
       // Update localStorage if user data exists
       const userData = localStorage.getItem('userData');
       if (userData) {
         const user = JSON.parse(userData);
-        user.balance = balanceData.balance;
-        user.totalAssets = balanceData.totalAssets;
-        user.cash = balanceData.cash;
+        user.balance = balanceData.balance; // Keep masked value for consistency
+        user.totalAssets = balanceData.totalAssets; // Keep masked value for consistency
+        user.cash = balanceData.cash; // Keep real cash value for calculations
         localStorage.setItem('userData', JSON.stringify(user));
       }
       
