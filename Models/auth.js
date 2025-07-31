@@ -2,6 +2,9 @@
 // Add a global variable to track current logged-in user ID
 let currentLoggedInUserId = null;
 
+// Make the variable available globally
+window.currentLoggedInUserId = currentLoggedInUserId;
+
 document.addEventListener('DOMContentLoaded', () => {
   // 获取DOM元素
   const loginOverlay = document.getElementById('login-overlay');
@@ -30,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const user = JSON.parse(userData);
       // 设置当前登录的用户ID
       currentLoggedInUserId = user.id || user.username;
+      window.currentLoggedInUserId = currentLoggedInUserId;
       displayUserInfo(user);
       loginOverlay.style.display = 'none';
       appContainer.style.display = 'flex';
@@ -41,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // 未登录，显示登录界面
       currentLoggedInUserId = null;
+      window.currentLoggedInUserId = null;
       loginOverlay.style.display = 'flex';
       appContainer.style.display = 'none';
     }
@@ -138,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 设置当前登录的用户ID
       currentLoggedInUserId = userData.id || username;
+      window.currentLoggedInUserId = currentLoggedInUserId;
       
       // 显示用户信息
       displayUserInfo(userData);
@@ -228,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 重置当前登录的用户ID
     currentLoggedInUserId = null;
+    window.currentLoggedInUserId = null;
     
     // 移除logged-in类
     document.body.classList.remove('logged-in');
