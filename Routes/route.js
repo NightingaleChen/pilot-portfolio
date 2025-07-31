@@ -7,6 +7,8 @@ const collectRoutes = require('./collectRoutes');
 const recommendRoutes = require('./recommendRoutes');
 // 导入股票相关路由
 const stocksRoutes = require('./stocksRoutes');
+// 导入交易相关路由
+const tradesRoutes = require('./tradesRoutes');
 
 // 使用收藏路由
 router.use('/collect', collectRoutes);
@@ -14,5 +16,7 @@ router.use('/collect', collectRoutes);
 router.use('/recommend', recommendRoutes);
 // 使用股票路由
 router.use('/stocks', stocksRoutes);
+// 使用交易路由
+router.use('/trades', tradesRoutes);
 
 module.exports = router;
