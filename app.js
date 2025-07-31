@@ -12,7 +12,7 @@ const dataserverRoutes = require('./Models/dataserver'); // 导入dataserver路�
 const app = express();
 
 
-const PORT = process.env.PORT || 1040;
+const PORT = process.env.PORT || 1058;
 
 
 // Middleware
@@ -30,6 +30,7 @@ app.use((req, res, next) => {
 
 // Static file service
 app.use(express.static(path.join(__dirname, 'Views')));
+app.use(express.static(path.join(__dirname, 'public')));
 // Add static file service for Models directory
 app.use('/Models', express.static(path.join(__dirname, 'Models')));
 
