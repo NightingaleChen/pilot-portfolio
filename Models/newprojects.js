@@ -20,15 +20,11 @@ async function initializePortfolio() {
     const user = JSON.parse(userData);
     const userId = user.id;
     
-    // 添加事件监听器
-    addNewItem.addEventListener('click', () => {
-      // 调用newprojects.js中的添加项目浮窗功能
-      if (typeof showAddItemOverlay === 'function') {
-        showAddItemOverlay();
-      } else {
-        console.error('showAddItemOverlay function not found. Please ensure newprojects.js is loaded.');
-      }
-    });
+    // 从数据库获取用户投资组合
+    const response = await fetch(`/api/trades/portfolio?userId=${userId}`);
+    if (!response.ok) {
+      throw new Error('获取投资组合失败');
+    }
     
     const portfolioData = await response.json();
     
@@ -401,8 +397,25 @@ async function confirmTrade() {
     const tradeType = document.getElementById('trade-type').value;
     const quantity = parseInt(document.getElementById('quantity').value);
     
+    // 添加更严格的验证
+    if (!user.id) {
+      alert('用户ID无效，请重新登录');
+      console.error('用户数据:', user);
+      return;
+    }
+    
+    if (!stockInfo.dataset.stockName) {
+      alert('请先选择股票');
+      return;
+    }
+    
     if (!quantity || quantity <= 0) {
       alert('请输入有效的数量');
+      return;
+    }
+    
+    if (!tradeType || !['buy', 'sell'].includes(tradeType)) {
+      alert('请选择有效的交易类型');
       return;
     }
     
@@ -412,6 +425,17 @@ async function confirmTrade() {
       action: tradeType,
       quantity: quantity
     };
+    
+    // 添加调试日志
+    console.log('用户数据:', user);
+    console.log('发送的交易数据:', tradeData);
+    
+    // 验证所有参数都不是 undefined
+    if (Object.values(tradeData).some(value => value === undefined)) {
+      console.error('发现undefined参数:', tradeData);
+      alert('数据验证失败，请检查所有字段');
+      return;
+    }
     
     const response = await fetch('/api/trades/add', {
       method: 'POST',
@@ -449,6 +473,20 @@ async function confirmTrade() {
     const result = await response.json();
     alert('交易成功！');
     
+    // 在交易成功后添加
+    if (result.balance) {
+    // 更新页面上的余额显示
+    const balanceElement = document.getElementById('user-balance');
+    if (balanceElement) {
+    balanceElement.textContent = `$${result.balance.current.toFixed(2)}`;
+    }
+    
+    // 显示余额变化信息
+    const changeAmount = Math.abs(result.balance.change);
+    const changeType = result.balance.change > 0 ? '增加' : '减少';
+    alert(`交易成功！余额${changeType} $${changeAmount.toFixed(2)}，当前余额: $${result.balance.current.toFixed(2)}`);
+    }
+    
     // 关闭浮窗
     hideAddItemOverlay();
     
@@ -456,7 +494,7 @@ async function confirmTrade() {
     initializePortfolio();
     
   } catch (error) {
-    console.error('交易失败:', error);
+    console.error('交易过程中出错:', error);
     alert('交易失败: ' + error.message);
   }
 }

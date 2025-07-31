@@ -6,13 +6,13 @@ const authRoutes = require('./Routes/authRoutes');
 
 // Import routes
 const routes = require('./Routes/route');
-const dataserverRoutes = require('./Models/dataserver'); // 导入dataserver路由模块
+// 删除不存在的模块引用
 
 // Create Express application
 const app = express();
 
 
-const PORT = process.env.PORT || 1012;
+const PORT = process.env.PORT || 3000; // 改为其他端口，如3000
 
 
 // Middleware
@@ -44,9 +44,9 @@ app.use('/css', express.static(path.join(__dirname, 'Views/css')));
 
 
 // 使用路由
-app.use('/api/data', dataserverRoutes); // 使用dataserver路由
+// 删除对不存在模块的使用
 app.use('/api', routes);
-
+// 删除重复的路由注册
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Views', 'index.html'));
@@ -54,5 +54,5 @@ app.get('/', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`服务器运行在端口 ${PORT}`);
 });
