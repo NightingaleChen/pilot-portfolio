@@ -55,6 +55,150 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
+  // Add view toggle functionality
+  let isTableView = false;
+  let currentStockData = null;
+  
+  document.addEventListener('click', function(event) {
+    if (event.target && (event.target.id === 'view-toggle-btn' || event.target.closest('#view-toggle-btn'))) {
+      toggleView();
+    }
+  });
+  
+  function toggleView() {
+    const toggleBtn = document.getElementById('view-toggle-btn');
+    const chartContainer = document.getElementById('chart-container');
+    
+    if (!toggleBtn || !chartContainer) return;
+    
+    // Add a quick visual feedback
+    toggleBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      toggleBtn.style.transform = '';
+    }, 100);
+    
+    isTableView = !isTableView;
+    
+    if (isTableView) {
+      // Switch to table view
+      toggleBtn.textContent = 'Chart View';
+      toggleBtn.title = 'Switch to Chart View';
+      toggleBtn.setAttribute('aria-label', 'Switch to Chart View');
+      toggleBtn.classList.add('active');
+      
+      // Hide chart content
+      const chartContent = chartContainer.querySelector('.chart-content');
+      if (chartContent) {
+        chartContent.style.display = 'none';
+      }
+      
+      // Show table
+      showStockTable();
+    } else {
+      // Switch to chart view
+      toggleBtn.textContent = 'Table View';
+      toggleBtn.title = 'Switch to Table View';
+      toggleBtn.setAttribute('aria-label', 'Switch to Table View');
+      toggleBtn.classList.remove('active');
+      
+      // Hide table
+      const tableContainer = chartContainer.querySelector('.stock-table-container');
+      if (tableContainer) {
+        tableContainer.style.display = 'none';
+      }
+      
+      // Show chart content
+      const chartContent = chartContainer.querySelector('.chart-content');
+      if (chartContent) {
+        chartContent.style.display = 'block';
+      }
+    }
+  }
+  
+  function showStockTable() {
+    const chartContainer = document.getElementById('chart-container');
+    if (!chartContainer) return;
+    
+    // Remove existing table container
+    let tableContainer = chartContainer.querySelector('.stock-table-container');
+    if (tableContainer) {
+      tableContainer.remove();
+    }
+    
+    // Create new table container
+    tableContainer = document.createElement('div');
+    tableContainer.classList.add('stock-table-container');
+    tableContainer.style.display = 'block';
+    
+    // Create table HTML
+    const tableHTML = generateStockTableHTML();
+    tableContainer.innerHTML = tableHTML;
+    
+    // Add after chart header
+    chartContainer.querySelector('.chart-header').after(tableContainer);
+  }
+  
+  function generateStockTableHTML() {
+    if (!currentStockData || !currentStockData.data || currentStockData.data.length === 0) {
+      return `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-light);">
+          <p>No stock data available</p>
+        </div>
+      `;
+    }
+    
+    // Sort data by date in descending order (newest first)
+    const data = [...currentStockData.data].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const rows = data.map((record, index) => {
+      const date = new Date(record.date).toLocaleDateString();
+      const open = parseFloat(record.open).toFixed(2);
+      const high = parseFloat(record.high).toFixed(2);
+      const low = parseFloat(record.low).toFixed(2);
+      const close = parseFloat(record.close).toFixed(2);
+      const volume = parseInt(record.volume).toLocaleString();
+      
+      // Calculate daily change
+      const change = (parseFloat(record.close) - parseFloat(record.open)).toFixed(2);
+      const changePercent = ((change / parseFloat(record.open)) * 100).toFixed(2);
+      // Reverse the color logic: positive changes are red, negative changes are green
+      const changeClass = change >= 0 ? 'negative' : 'positive';
+      const changeSign = change >= 0 ? '+' : '';
+      
+      return `
+        <tr>
+          <td class="date-cell">${date}</td>
+          <td class="price-cell">$${open}</td>
+          <td class="price-cell">$${high}</td>
+          <td class="price-cell">$${low}</td>
+          <td class="price-cell">$${close}</td>
+          <td class="price-cell ${changeClass}">${changeSign}$${Math.abs(change)} (${changeSign}${Math.abs(changePercent)}%)</td>
+          <td class="volume-cell">${volume}</td>
+        </tr>
+      `;
+    }).join('');
+    
+    return `
+      <div class="table-scrollable">
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Open</th>
+              <th>High</th>
+              <th>Low</th>
+              <th>Close</th>
+              <th>Change</th>
+              <th>Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+  
   // 从后端API获取股票列表
   async function loadStocksList() {
     try {
@@ -191,6 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawKLineChart(stock_name, kLineData, productDetails) {
     if (!kLineData || kLineData.length === 0) return;
     
+    // Store current stock data for table view
+    currentStockData = {
+      stock_name: stock_name,
+      data: kLineData,
+      details: productDetails
+    };
+    
     // 更新当前选中的产品ID
     currentProductId = stock_name;
     
@@ -205,6 +356,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const chartContent = chartContainer.querySelector('.chart-content');
     if (chartContent) {
       chartContent.remove();
+    }
+    
+    // Remove table container if exists
+    const tableContainer = chartContainer.querySelector('.stock-table-container');
+    if (tableContainer) {
+      tableContainer.remove();
     }
     
     // 移除占位符
@@ -264,6 +421,13 @@ document.addEventListener('DOMContentLoaded', () => {
         item.parentElement.classList.remove('active');
       }
     });
+    
+    // Handle current view state (chart or table)
+    if (isTableView) {
+      // If we're in table view, hide the chart and show the table
+      newChartContent.style.display = 'none';
+      showStockTable();
+    }
   }
   
   // 绘制K线

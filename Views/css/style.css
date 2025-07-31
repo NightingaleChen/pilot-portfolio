@@ -455,6 +455,100 @@ button {
   color: var(--text-light);
 }
 
+/* Stock records table styles */
+.stock-table-container {
+  height: calc(100% - 60px);
+  min-height: 300px;
+  background-color: var(--background-color-light);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  display: none; /* Hidden by default */
+}
+
+.stock-table {
+  width: 100%;
+  background-color: transparent;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.stock-table thead {
+  background-color: var(--medium-gray);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.stock-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.stock-table tbody tr {
+  transition: background-color var(--transition-speed);
+  border-bottom: 1px solid var(--dark-gray);
+}
+
+.stock-table tbody tr:hover {
+  background-color: var(--dark-gray);
+}
+
+.stock-table td {
+  padding: 12px 16px;
+  color: var(--text-light);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stock-table .date-cell {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+}
+
+.stock-table .price-cell {
+  font-weight: 600;
+  text-align: right;
+}
+
+.stock-table .positive {
+  color: var(--success-color, #4CAF50);
+}
+
+.stock-table .negative {
+  color: var(--error-color, #f44336);
+}
+
+.stock-table .volume-cell {
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.table-scrollable {
+  max-height: calc(100% - 50px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.table-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-scrollable::-webkit-scrollbar-track {
+  background: var(--dark-gray);
+  border-radius: 3px;
+}
+
+.table-scrollable::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 3px;
+}
+
+.table-scrollable::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
 .sidebar-footer {
   padding: 20px;
   border-top: 1px solid var(--medium-gray);
@@ -912,6 +1006,12 @@ button {
   margin-bottom: 20px;
 }
 
+.chart-left-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .chart-header h2 {
   font-size: 1.4rem;
   font-weight: 600;
@@ -972,6 +1072,34 @@ button {
   color: var(--black); /* 活跃状态文字颜色改为黑色，增加对比度 */
   border-color: var(--primary-light); /* 边框颜色设为浅金色 */
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.5); /* 添加发光效果 */
+}
+
+/* View toggle button styles */
+.view-toggle-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: var(--medium-gray);
+  color: var(--text-color);
+  border: 1px solid var(--light-gray);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.view-toggle-btn:hover {
+  background-color: var(--light-gray);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.view-toggle-btn.active {
+  background-color: var(--primary-color);
+  color: var(--black);
+  border-color: var(--primary-color);
+  font-weight: 600;
 }
 
 /* 产品详情浮窗样式 */
