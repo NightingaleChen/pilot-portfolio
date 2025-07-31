@@ -95,7 +95,12 @@ async function loadPortfolioData() {
     
     // 添加事件监听器
     addNewItem.addEventListener('click', () => {
-      alert('添加新项目功能即将上线！');
+      // 调用newprojects.js中的添加项目浮窗功能
+      if (typeof showAddItemOverlay === 'function') {
+        showAddItemOverlay();
+      } else {
+        console.error('showAddItemOverlay function not found. Please ensure newprojects.js is loaded.');
+      }
     });
     
     // 为每个股票项目添加点击事件，跳转到详情页面

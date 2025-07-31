@@ -47,6 +47,9 @@ document.addEventListener('componentsLoaded', () => {
 });
 
 // 初始化应用
+// 在 initializeApp 函数外部声明全局变量
+let collectionItems;
+
 function initializeApp() {
   // 获取DOM元素
   const collectionList = document.getElementById('collection-list');
@@ -368,8 +371,12 @@ function drawKLineChart(productId) {
   const addNewItemButton = document.querySelector('.add-new-item');
   if (addNewItemButton) {
     addNewItemButton.addEventListener('click', () => {
-      // Add logic for opening new project form or dialog here
-      alert('Add new project feature coming soon!');
+      // 调用新项目功能
+      if (typeof showAddItemOverlay === 'function') {
+        showAddItemOverlay();
+      } else {
+        console.error('showAddItemOverlay function not found. Please ensure newprojects.js is loaded.');
+      }
     });
   }
   
@@ -470,6 +477,7 @@ function drawKLineChart(productId) {
     });
   }
 };
+  // 移动 collectionItems 的事件监听器到函数内部
   collectionItems.forEach(item => {
     item.addEventListener('click', (e) => {
       if (e.target.tagName !== 'BUTTON') {
@@ -478,6 +486,8 @@ function drawKLineChart(productId) {
       }
     });
   });
+  // 删除第473行的重复代码
+  // collectionItems.forEach(item => { ... }); // 删除这部分
   
   // 点击推荐项目 - 将来从后端API获取详细数据
   document.querySelectorAll('#todays-picks-list li').forEach(item => {
