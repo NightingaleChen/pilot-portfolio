@@ -33,6 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
       displayUserInfo(user);
       loginOverlay.style.display = 'none';
       appContainer.style.display = 'flex';
+      
+      // 刷新余额以确保显示最新数据
+      if (user.id) {
+        refreshUserBalance(user.id);
+      }
     } else {
       // 未登录，显示登录界面
       currentLoggedInUserId = null;
@@ -43,14 +48,62 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 显示用户信息的函数
   const displayUserInfo = (user) => {
-    userBalance.textContent = `$${user.balance}`;
+    // Use actual cash balance from database
+    userBalance.textContent = `$${user.balance || user.cash}`;
     userTotalAssets.textContent = `$${user.totalAssets}`;
     userName.textContent = `${user.firstname} ${user.lastname}`;
     userAvatar.src = user.avatar || 'path/to/default/avatar.png';
     
     // 确保应用容器可见
     document.body.classList.add('logged-in');
+    
+    // 添加点击刷新余额的功能
+    if (userBalance && user.id) {
+      userBalance.style.cursor = 'pointer';
+      userBalance.title = 'Click to refresh balance';
+      userBalance.onclick = () => refreshUserBalance(user.id);
+    }
+    
+    if (userTotalAssets && user.id) {
+      userTotalAssets.style.cursor = 'pointer';
+      userTotalAssets.title = 'Click to refresh total assets';
+      userTotalAssets.onclick = () => refreshUserBalance(user.id);
+    }
   };
+
+  // 刷新用户余额的函数
+  const refreshUserBalance = async (userId) => {
+    try {
+      const response = await fetch(`/api/auth/user/${userId}/balance`);
+      if (!response.ok) {
+        throw new Error('Failed to refresh balance');
+      }
+      
+      const balanceData = await response.json();
+      
+      // Update display
+      userBalance.textContent = `$${balanceData.balance}`;
+      userTotalAssets.textContent = `$${balanceData.totalAssets}`;
+      
+      // Update localStorage if user data exists
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const user = JSON.parse(userData);
+        user.balance = balanceData.balance;
+        user.totalAssets = balanceData.totalAssets;
+        user.cash = balanceData.cash;
+        localStorage.setItem('userData', JSON.stringify(user));
+      }
+      
+      return balanceData;
+    } catch (error) {
+      console.error('Error refreshing user balance:', error);
+      return null;
+    }
+  };
+
+  // 暴露刷新余额函数给全局作用域
+  window.refreshUserBalance = refreshUserBalance;
   
   // 登录处理
   const handleLogin = async () => {
@@ -63,14 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
-    // 检查是否已有其他账号登录
-    if (currentLoggedInUserId && currentLoggedInUserId !== username) {
-      loginError.textContent = 'Already logged in with another account. Please log out first.';
-      return;
-    }
-    
     try {
-      // 发送登录请求
+      // 发送登录请求 - 让服务器验证用户名和密码
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -81,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Failed to log in.');
+        throw new Error(error.error || 'Invalid username or password.');
       }
       
       const userData = await response.json();
@@ -107,6 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
       usernameInput.value = '';
       passwordInput.value = '';
       loginError.textContent = '';
+      
+      // 设置定期刷新余额（每30秒刷新一次）
+      if (userData.id) {
+        setInterval(() => {
+          refreshUserBalance(userData.id);
+        }, 30000);
+      }
       
       // 使用ComponentLoader加载组件，而不是刷新页面
       if (typeof ComponentLoader !== 'undefined') {
