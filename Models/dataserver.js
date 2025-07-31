@@ -345,4 +345,44 @@ router.get('/users/:user_id/stocks/:symbol/profit', async (req, res) => {
   }
 });
 
+// API路由7：获取用户指定股票的交易历史
+router.get('/users/:user_id/stocks/:symbol/trades', async (req, res) => {
+  try {
+    const { user_id, symbol } = req.params;
+    
+    if (!user_id || isNaN(user_id)) {
+      return res.status(400).json({
+        error: '用户ID无效',
+        details: '请提供有效的用户ID（正整数）'
+      });
+    }
+    
+    if (!symbol || typeof symbol !== 'string' || symbol.trim() === '') {
+      return res.status(400).json({ 
+        error: '股票代码不能为空',
+        details: '请提供有效的股票代码（如AAPL、GOOG）'
+      });
+    }
+    
+    // 获取用户指定股票的所有交易数据
+    const trades = await stockData.getUserStockTrades(parseInt(user_id), symbol);
+    
+    res.json(trades);
+  } catch (error) {
+    console.error(`获取用户股票交易历史失败 [user_id=${req.params.user_id}, symbol=${req.params.symbol}]：`, error);
+    const errorResponse = {
+      error: '获取用户股票交易历史失败',
+      details: process.env.NODE_ENV === 'development' 
+        ? {
+            message: error.message,
+            stack: error.stack.substring(0, 500),
+            user_id: req.params.user_id,
+            symbol: req.params.symbol
+          }
+        : '请联系管理员'
+    };
+    res.status(500).json(errorResponse);
+  }
+});
+
 module.exports = router;
