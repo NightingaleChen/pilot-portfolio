@@ -538,16 +538,144 @@
         }
 
         // 买入按钮事件
-        document.getElementById('buy-button').addEventListener('click', function() {
+        document.getElementById('buy-button').addEventListener('click', async function() {
             const stockName = document.getElementById('stock-name').textContent;
-            alert(`买入功能：您将买入 ${stockName}\n此功能将在后续版本中实现。`);
+            const stockSymbol = document.getElementById('stock-symbol').textContent.split(': ')[1];
+            const currentPrice = parseFloat(document.getElementById('current-price').textContent.replace('$', ''));
+            
+            // 弹出对话框让用户输入购买数量
+            const quantity = prompt(`请输入您要买入 ${stockName} 的数量：`);
+            
+            // 验证输入
+            if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
+                alert('请输入有效的数量！');
+                return;
+            }
+            
+            try {
+                // 准备交易数据
+                const tradeData = {
+                    user_id: 1, // 默认用户ID为1
+                    stock_id: getStockIdBySymbol(stockSymbol), // 需要实现此函数
+                    source_name: stockSymbol,
+                    action: 'buy', // 买入操作
+                    price: currentPrice,
+                    quantity: parseInt(quantity)
+                };
+                
+                // 发送API请求
+                const response = await fetch('/api/trades/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tradeData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`买入成功！您已买入 ${quantity} 股 ${stockName}，总金额：$${(currentPrice * parseInt(quantity)).toFixed(2)}`);
+                    // 刷新页面以更新持有数量和收益信息
+                    location.reload();
+                } else {
+                    alert(`买入失败：${result.error || '未知错误'}`);
+                }
+            } catch (error) {
+                console.error('买入请求失败:', error);
+                alert(`买入请求失败：${error.message || '网络错误'}`);
+            }
         });
 
         // 卖出按钮事件
-        document.getElementById('sell-button').addEventListener('click', function() {
+        document.getElementById('sell-button').addEventListener('click', async function() {
             const stockName = document.getElementById('stock-name').textContent;
-            alert(`卖出功能：您将卖出 ${stockName}\n此功能将在后续版本中实现。`);
+            const stockSymbol = document.getElementById('stock-symbol').textContent.split(': ')[1];
+            const currentPrice = parseFloat(document.getElementById('current-price').textContent.replace('$', ''));
+            const holdingText = document.getElementById('holding-amount').textContent;
+            const currentHolding = parseInt(holdingText.split(' ')[0]);
+            
+            // 检查是否有足够的持股数量
+            if (currentHolding <= 0) {
+                alert(`您当前没有持有 ${stockName} 的股票，无法卖出！`);
+                return;
+            }
+            
+            // 弹出对话框让用户输入卖出数量
+            const quantity = prompt(`您当前持有 ${currentHolding} 股 ${stockName}，请输入要卖出的数量：`);
+            
+            // 验证输入
+            if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
+                alert('请输入有效的数量！');
+                return;
+            }
+            
+            // 检查卖出数量是否超过持有数量
+            if (parseInt(quantity) > currentHolding) {
+                alert(`卖出数量不能超过持有数量 ${currentHolding}！`);
+                return;
+            }
+            
+            try {
+                // 准备交易数据
+                const tradeData = {
+                    user_id: 1, // 默认用户ID为1
+                    stock_id: getStockIdBySymbol(stockSymbol), // 需要实现此函数
+                    source_name: stockSymbol,
+                    action: 'sell', // 卖出操作
+                    price: currentPrice,
+                    quantity: parseInt(quantity)
+                };
+                
+                // 发送API请求
+                const response = await fetch('/api/trades/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tradeData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`卖出成功！您已卖出 ${quantity} 股 ${stockName}，总金额：$${(currentPrice * parseInt(quantity)).toFixed(2)}`);
+                    // 刷新页面以更新持有数量和收益信息
+                    location.reload();
+                } else {
+                    alert(`卖出失败：${result.error || '未知错误'}`);
+                }
+            } catch (error) {
+                console.error('卖出请求失败:', error);
+                alert(`卖出请求失败：${error.message || '网络错误'}`);
+            }
         });
+
+        // 根据股票代码获取股票ID
+        function getStockIdBySymbol(symbol) {
+            // 这里使用映射表，实际项目中可能需要从后端获取
+            const stockMap = {
+                'MSFT': 1,    // 微软
+                'TSLA': 2,    // 特斯拉
+                'AAPL': 3,    // 苹果
+                'NVDA': 4,    // 英伟达
+                'AMZN': 5,    // 亚马逊
+                'GOOGL': 6,   // 谷歌
+                'META': 7,    // Facebook(Meta)
+                'BIDU': 8,    // 百度
+                'BABA': 9,    // 阿里巴巴
+                'TCEHY': 10,  // 腾讯
+                'TSM': 11,    // 台积电
+                'SSNLF': 12,  // 三星
+                'SPY': 13,    // 标普500指数
+                'DIA': 14,    // 道琼斯指数
+                'QQQ': 15,    // 纳斯达克指数
+                'IWM': 16,    // 罗素2000指数
+                'FXI': 17,    // 中证300指数
+                'EWH': 18     // 恒生指数
+            };
+            return stockMap[symbol] || 1; // 默认返回1
+        }
 
         // 页面加载完成后初始化
         window.addEventListener('load', initPage);
