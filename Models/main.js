@@ -179,15 +179,6 @@ function initializeApp() {
       }
     });
     
-    // 更新投资组合项 - 将来从后端API获取数据
-    const portfolioItems = document.querySelectorAll('.portfolio-item h3');
-    portfolioItems.forEach(item => {
-      const id = item.closest('.portfolio-item').dataset.id;
-      if (productData[id]) {
-        item.textContent = productData[id].name;
-      }
-    });
-    
     // 更新持有文本
     const sharesTexts = document.querySelectorAll('.shares');
     sharesTexts.forEach(item => {
