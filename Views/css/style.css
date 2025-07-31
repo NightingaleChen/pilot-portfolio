@@ -63,7 +63,7 @@ button {
 
 /* 侧边栏样式 */
 .sidebar {
-  width: 260px;
+  width: 270px;
   background-color: var(--dark-gray);
   border-right: 1px solid var(--medium-gray);
   display: flex;
@@ -589,11 +589,14 @@ button {
   text-align: center;
 }
 
-#todays-picks-list .change.positive {
+#todays-picks-list .change.negative {
   color: #34C759;
   background: rgba(52, 199, 89, 0.15);
 }
-
+#todays-picks-list .change.positive {
+  color: #FF3B30;
+  background: rgba(255, 59, 48, 0.15);
+}
 #todays-picks-list .change.negative {
   color: #FF3B30;
   background: rgba(255, 59, 48, 0.15);

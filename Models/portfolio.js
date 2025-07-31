@@ -132,6 +132,7 @@ function showAddItemOverlay() {
   setupOverlayEvents();
 }
 
+
 // 创建添加项目浮窗
 function createAddItemOverlay() {
   const overlay = document.createElement('div');

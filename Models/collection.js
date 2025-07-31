@@ -12,12 +12,45 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
-    // 默认用户ID - 实际应用中应该从登录系统获取
-    const userId = 1; // 假设用户ID为1
+    // 从登录系统获取用户ID
+    function getUserId() {
+      // 首先检查全局变量
+      if (window.currentLoggedInUserId) {
+        console.log("Using global user ID:", window.currentLoggedInUserId);
+        return window.currentLoggedInUserId;
+      }
+      
+      // 如果全局变量不存在，从localStorage获取
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const user = JSON.parse(userData);
+        const userId = user.id || user.username;
+        console.log("Using localStorage user ID:", userId, "from user data:", user);
+        return userId;
+      }
+      
+      // 如果都没有，返回null
+      console.error('No logged in user found');
+      return null;
+    }
+    
+    const userId = getUserId();
+    
+    // 如果没有用户ID，显示未登录状态
+    if (!userId) {
+      collectionList.innerHTML = '<li class="error-message">Please log in to view favorites</li>';
+      return;
+    }
     
     // 获取用户收藏列表
     function fetchCollections() {
-      console.log("collection list start");
+      const userId = getUserId();
+      if (!userId) {
+        collectionList.innerHTML = '<li class="error-message">Please log in to view favorites</li>';
+        return;
+      }
+      
+      console.log("collection list start - fetching for user ID:", userId);
       fetch(`/api/collect/get-with-prices?user_id=${userId}`)
         .then(response => {
           if (!response.ok) {
@@ -76,6 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 删除收藏
     function deleteCollection(stockName) {
+      const userId = getUserId();
+      if (!userId) {
+        alert('Please log in to delete favorites');
+        return;
+      }
+      
+      console.log("Deleting collection for user ID:", userId, "stock:", stockName);
       fetch('/api/collect/delete', {
         method: 'DELETE',
         headers: {
@@ -104,6 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 获取可添加的股票列表
     function fetchAvailableStocks() {
+      const userId = getUserId();
+      if (!userId) {
+        alert('Please log in to add favorites');
+        return;
+      }
+      
+      console.log("Fetching available stocks for user ID:", userId);
       fetch(`/api/collect/stocks-with-prices?user_id=${userId}`)
         .then(response => {
           if (!response.ok) {
@@ -136,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 显示添加股票对话框
     function showAddStockDialog(stocks) {
-      // 移除旧对话框（如果存在）
+      // 显示添加股票对话框
       console.log("collection add start");
       const oldDialog = document.getElementById('add-stock-dialog');
       if (oldDialog) {
@@ -203,6 +250,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 添加确认按钮事件监听器
       document.getElementById('confirm-selection').addEventListener('click', () => {
+        const currentUserId = getUserId();
+        if (!currentUserId) {
+          alert('Please log in to add favorites');
+          return;
+        }
+        
+        console.log("Adding collection for user ID:", currentUserId);
         const selectedCheckboxes = dialog.querySelectorAll('.stock-checkbox:checked');
         const selectedStocks = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.name);
         
@@ -220,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                user_id: userId,
+                user_id: currentUserId,
                 stock_name: stockName
               })
             })
@@ -324,6 +378,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初始加载收藏列表
     fetchCollections();
   }
+  
+  // 监听用户登录事件，刷新收藏列表
+  document.addEventListener('userLoggedIn', () => {
+    // 等待一下确保DOM元素已加载
+    setTimeout(() => {
+      initializeCollection();
+    }, 100);
+  });
   
   // 开始初始化过程
   initializeCollection();
