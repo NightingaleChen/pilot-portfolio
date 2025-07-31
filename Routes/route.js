@@ -10,6 +10,8 @@ const stocksRoutes = require('./stocksRoutes');
 // 导入交易相关路由
 const tradesRoutes = require('./tradesRoutes');
 
+// 注册交易路由
+router.use('/trades', tradesRoutes);  // 移除多余的 '/api' 前缀
 // 使用收藏路由
 router.use('/collect', collectRoutes);
 // 使用推荐路由
