@@ -455,6 +455,100 @@ button {
   color: var(--text-light);
 }
 
+/* Stock records table styles */
+.stock-table-container {
+  height: calc(100% - 60px);
+  min-height: 300px;
+  background-color: var(--background-color-light);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  display: none; /* Hidden by default */
+}
+
+.stock-table {
+  width: 100%;
+  background-color: transparent;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.stock-table thead {
+  background-color: var(--medium-gray);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.stock-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.stock-table tbody tr {
+  transition: background-color var(--transition-speed);
+  border-bottom: 1px solid var(--dark-gray);
+}
+
+.stock-table tbody tr:hover {
+  background-color: var(--dark-gray);
+}
+
+.stock-table td {
+  padding: 12px 16px;
+  color: var(--text-light);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stock-table .date-cell {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+}
+
+.stock-table .price-cell {
+  font-weight: 600;
+  text-align: right;
+}
+
+.stock-table .positive {
+  color: var(--success-color, #4CAF50);
+}
+
+.stock-table .negative {
+  color: var(--error-color, #f44336);
+}
+
+.stock-table .volume-cell {
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.table-scrollable {
+  max-height: calc(100% - 50px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.table-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-scrollable::-webkit-scrollbar-track {
+  background: var(--dark-gray);
+  border-radius: 3px;
+}
+
+.table-scrollable::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 3px;
+}
+
+.table-scrollable::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
 .sidebar-footer {
   padding: 20px;
   border-top: 1px solid var(--medium-gray);
@@ -912,6 +1006,12 @@ button {
   margin-bottom: 20px;
 }
 
+.chart-left-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .chart-header h2 {
   font-size: 1.4rem;
   font-weight: 600;
@@ -972,6 +1072,34 @@ button {
   color: var(--black); /* 活跃状态文字颜色改为黑色，增加对比度 */
   border-color: var(--primary-light); /* 边框颜色设为浅金色 */
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.5); /* 添加发光效果 */
+}
+
+/* View toggle button styles */
+.view-toggle-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: var(--medium-gray);
+  color: var(--text-color);
+  border: 1px solid var(--light-gray);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.view-toggle-btn:hover {
+  background-color: var(--light-gray);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.view-toggle-btn.active {
+  background-color: var(--primary-color);
+  color: var(--black);
+  border-color: var(--primary-color);
+  font-weight: 600;
 }
 
 /* 产品详情浮窗样式 */
@@ -2307,110 +2435,358 @@ body.logged-in .app-container {
   display: flex !important;
 }
 
-/* 购买对话框样式 */
+/* 购买对话框样式 - 现代化设计 */
 .purchase-dialog {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .purchase-dialog-content {
-  background-color: var(--dark-gray);
-  border-radius: var(--border-radius-md);
-  width: 400px;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(45, 45, 45, 0.95));
+  border-radius: 20px;
+  width: 480px;
   max-width: 90%;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 
+              0 0 0 1px rgba(212, 175, 55, 0.3);
   overflow: hidden;
+  transform: scale(0.9);
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .purchase-dialog-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid var(--medium-gray);
+  padding: 24px 24px 20px 24px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
 }
 
 .purchase-dialog-header h3 {
-  color: var(--primary-color);
+  color: #D4AF37;
   margin: 0;
+  font-size: 1.5em;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .close-button {
   background: none;
   border: none;
-  color: var(--text-light);
-  font-size: 24px;
+  color: #CCCCCC;
+  font-size: 28px;
   cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  background: rgba(212, 175, 55, 0.2);
+  color: #D4AF37;
+  transform: rotate(90deg);
 }
 
 .purchase-dialog-body {
-  padding: 16px;
+  padding: 24px;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  position: relative;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: var(--text-light);
+  color: #E5E5E5;
+  font-weight: 500;
+  font-size: 0.95em;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 10px;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid var(--medium-gray);
-  background-color: var(--light-gray);
-  color: var(--text-color);
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(60, 60, 60, 0.8);
+  background: rgba(60, 60, 60, 0.6);
+  color: #FFFFFF;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #D4AF37;
+  background: rgba(60, 60, 60, 0.8);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+  transform: translateY(-1px);
+}
+
+.form-group input:hover:not(:focus),
+.form-group select:hover:not(:focus) {
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.form-group input[readonly] {
+  background: rgba(40, 40, 40, 0.6);
+  cursor: not-allowed;
+  color: #CCCCCC;
+}
+
+.form-group input[readonly]:focus {
+  box-shadow: none;
+  transform: none;
+}
+
+/* Input validation states */
+.form-group input.error,
+.form-group select.error {
+  border-color: #FF6B6B;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
+.form-group input.success,
+.form-group select.success {
+  border-color: #4ECDC4;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+}
+
+/* Floating labels effect */
+.form-group input:focus + label,
+.form-group select:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group select:not([value=""]) + label {
+  color: #D4AF37;
+  transform: translateY(-2px);
 }
 
 .purchase-dialog-footer {
   display: flex;
   justify-content: flex-end;
-  padding: 16px;
-  border-top: 1px solid var(--medium-gray);
+  padding: 20px 24px 24px 24px;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
   gap: 12px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.02));
 }
 
 .cancel-button,
 .confirm-button {
-  padding: 8px 16px;
-  border-radius: var(--border-radius-sm);
-  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
   cursor: pointer;
+  font-size: 0.95em;
+  border: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cancel-button::before,
+.confirm-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.cancel-button:hover::before,
+.confirm-button:hover::before {
+  left: 100%;
 }
 
 .cancel-button {
-  background-color: var(--light-gray);
-  color: var(--text-color);
+  background: rgba(60, 60, 60, 0.8);
+  color: #CCCCCC;
+  border: 2px solid rgba(60, 60, 60, 0.8);
 }
 
 .confirm-button {
-  background-color: var(--primary-color);
-  color: var(--black);
+  background: linear-gradient(135deg, #D4AF37, #F5E7A3);
+  color: #121212;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
 .cancel-button:hover {
-  background-color: var(--medium-gray);
+  background: rgba(80, 80, 80, 0.9);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .confirm-button:hover {
-  background-color: var(--primary-dark);
+  background: linear-gradient(135deg, #F5E7A3, #D4AF37);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.confirm-button:disabled {
+  background: rgba(60, 60, 60, 0.5);
+  color: rgba(204, 204, 204, 0.5);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.confirm-button:disabled::before {
+  display: none;
+}
+
+/* 添加加载状态 */
+.purchase-dialog .loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.purchase-dialog .loading::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-top: 2px solid #D4AF37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pulse animation for price loading */
+.form-group input.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Success/Error states */
+.form-group .validation-message {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  font-size: 0.8em;
+  color: #FF6B6B;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.form-group .validation-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-group .validation-message.success {
+  color: #4ECDC4;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .purchase-dialog-content {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .purchase-dialog-header,
+  .purchase-dialog-body,
+  .purchase-dialog-footer {
+    padding: 16px;
+  }
+  
+  .purchase-dialog-footer {
+    flex-direction: column;
+  }
+  
+  .cancel-button,
+  .confirm-button {
+    width: 100%;
+    margin: 4px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .purchase-dialog-content {
+    width: 100%;
+    margin: 10px;
+    border-radius: 15px;
+  }
+  
+  .purchase-dialog-header h3 {
+    font-size: 1.3em;
+  }
+  
+  .form-group label {
+    font-size: 0.9em;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 12px 14px;
+    font-size: 0.95em;
+  }
 }

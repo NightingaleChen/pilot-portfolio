@@ -495,3 +495,414 @@ body {
         font-size: 0.9em;
     }
 }
+
+/* Purchase Dialog Styles */
+.purchase-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 1;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Ensure dialog content consistency */
+.purchase-dialog-content {
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(45, 45, 45, 0.95));
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.2);
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    position: relative;
+    backdrop-filter: blur(15px);
+    overflow: hidden;
+}
+
+/* Add subtle glow effect to dialog */
+.purchase-dialog-content::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #D4AF37, #F5E7A3, #D4AF37);
+    border-radius: 22px;
+    z-index: -1;
+    opacity: 0.3;
+    animation: borderGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes borderGlow {
+    0% { opacity: 0.2; }
+    100% { opacity: 0.4; }
+}
+
+.purchase-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(245, 231, 163, 0.05));
+    border-radius: 12px;
+    padding: 15px 20px 20px 20px;
+    margin: -16px -16px 25px -16px;
+}
+
+.purchase-dialog-header h3 {
+    color: #D4AF37;
+    margin: 0;
+    font-size: 1.6em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+    background: linear-gradient(135deg, #D4AF37, #F5E7A3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.close-button {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(255, 107, 53, 0.1));
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.close-button:hover {
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-color: #ef4444;
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+/* Form consistency */
+.purchase-dialog-body {
+    padding: 0;
+    position: relative;
+}
+
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: #D4AF37;
+    font-weight: 600;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 0 1px 3px rgba(212, 175, 55, 0.3);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 16px 20px;
+    background: linear-gradient(145deg, rgba(51, 51, 51, 0.9), rgba(68, 68, 68, 0.9));
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    color: #FFFFFF;
+    font-size: 1em;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(145deg, rgba(68, 68, 68, 0.95), rgba(85, 85, 85, 0.95));
+    transform: translateY(-1px);
+}
+
+.form-group input[readonly] {
+    background: linear-gradient(145deg, rgba(68, 68, 68, 0.6), rgba(85, 85, 85, 0.6));
+    color: #CCCCCC;
+    cursor: not-allowed;
+    border-color: rgba(212, 175, 55, 0.1);
+}
+
+.form-group input.loading {
+    background: linear-gradient(145deg, rgba(68, 68, 68, 0.6), rgba(85, 85, 85, 0.6));
+    color: #CCCCCC;
+    position: relative;
+}
+
+.form-group input.loading::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #D4AF37;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+
+
+.purchase-dialog-footer {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 25px;
+    border-top: 2px solid rgba(212, 175, 55, 0.2);
+    margin-top: 25px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.02), rgba(245, 231, 163, 0.02));
+    border-radius: 12px;
+    padding: 20px;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: -16px;
+}
+
+.cancel-button,
+.confirm-button,
+.sell-confirm-button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1em;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    max-width: 200px;
+    height: 50px;
+    font-family: 'Poppins', sans-serif;
+    backdrop-filter: blur(10px);
+}
+
+.cancel-button {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(255, 107, 53, 0.1));
+    color: #ef4444;
+    border: 2px solid #ef4444;
+}
+
+.cancel-button:hover {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #FFFFFF;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+    border-color: #ef4444;
+}
+
+.cancel-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.confirm-button {
+    background: linear-gradient(135deg, #D4AF37, #F5E7A3);
+    color: #121212;
+    border: 2px solid #D4AF37;
+    position: relative;
+    font-weight: 700;
+}
+
+.confirm-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #F5E7A3, #D4AF37);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+    border-color: #D4AF37;
+}
+
+.confirm-button:active:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.sell-confirm-button {
+    background: linear-gradient(135deg, #D4AF37, #F5E7A3);
+    color: #121212;
+    border: 2px solid #D4AF37;
+    position: relative;
+    font-weight: 500;
+}
+
+.sell-confirm-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #F5E7A3, #D4AF37);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+    border-color: #D4AF37;
+}
+
+.sell-confirm-button:active:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.confirm-button:disabled,
+.sell-confirm-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(107, 114, 128, 0.3), rgba(156, 163, 175, 0.3));
+    color: #9ca3af;
+    border-color: #6b7280;
+}
+
+.confirm-button:disabled:hover,
+.sell-confirm-button:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button loading state */
+.confirm-button .loading,
+.sell-confirm-button .loading {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Button ripple effect */
+.confirm-button::before,
+.sell-confirm-button::before,
+.cancel-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+    z-index: 0;
+}
+
+.confirm-button:active:not(:disabled)::before,
+.sell-confirm-button:active:not(:disabled)::before,
+.cancel-button:active::before {
+    width: 120%;
+    height: 120%;
+}
+
+/* Add subtle animation to dialog appearance */
+.purchase-dialog {
+    animation: dialogSlideIn 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes dialogSlideIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsive Design for Purchase Dialog */
+@media (max-width: 768px) {
+    .purchase-dialog-content {
+        margin: 20px;
+        padding: 24px;
+        max-width: none;
+        width: calc(100% - 40px);
+        border-radius: 16px;
+    }
+    
+    .purchase-dialog-header {
+        margin: -8px -8px 20px -8px;
+        padding: 12px 16px 16px 16px;
+    }
+    
+    .purchase-dialog-header h3 {
+        font-size: 1.4em;
+    }
+    
+    .purchase-dialog-footer {
+        flex-direction: column;
+        gap: 15px;
+        margin-left: -8px;
+        margin-right: -8px;
+        margin-bottom: -8px;
+        padding: 16px;
+        justify-content: center;
+    }
+    
+    .cancel-button,
+    .confirm-button,
+    .sell-confirm-button {
+        width: 100%;
+        justify-content: center;
+        padding: 16px 24px;
+        font-size: 1em;
+        flex: none;
+        max-width: none;
+    }
+    
+    .form-group input,
+    .form-group select {
+        padding: 14px 18px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
