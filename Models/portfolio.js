@@ -133,33 +133,33 @@ async function showPurchaseDialog() {
     dialog.innerHTML = `
       <div class="purchase-dialog-content">
         <div class="purchase-dialog-header">
-          <h3>购买新股票</h3>
+          <h3>Buy New Stock</h3>
           <button class="close-button">&times;</button>
         </div>
         <div class="purchase-dialog-body">
           <div class="form-group">
-            <label for="stock-select">选择股票:</label>
+            <label for="stock-select">Select Stock:</label>
             <select id="stock-select">
-              <option value="">-- 请选择 --</option>
+              <option value="">-- Please Select --</option>
               ${stocks.map(stock => `<option value="${stock.name}">${stock.displayName || stock.name}</option>`).join('')}
             </select>
           </div>
           <div class="form-group">
-            <label for="stock-price">当前价格:</label>
+            <label for="stock-price">Current Price:</label>
             <input type="text" id="stock-price" readonly>
           </div>
           <div class="form-group">
-            <label for="quantity">购买数量:</label>
+            <label for="quantity">Purchase Quantity:</label>
             <input type="number" id="quantity" min="1" value="1">
           </div>
           <div class="form-group">
-            <label for="total-amount">总金额:</label>
+            <label for="total-amount">Total Amount:</label>
             <input type="text" id="total-amount" readonly>
           </div>
         </div>
         <div class="purchase-dialog-footer">
-          <button class="cancel-button">取消</button>
-          <button class="confirm-button">确认购买</button>
+          <button class="cancel-button">Cancel</button>
+          <button class="confirm-button">Confirm Purchase</button>
         </div>
       </div>
     `;
@@ -227,23 +227,23 @@ async function showPurchaseDialog() {
       const price = priceInput.value ? parseFloat(priceInput.value.replace('$', '')) : 0;
       
       if (!selectedStock) {
-        alert('请选择要购买的股票');
+        alert('Please select a stock to purchase');
         return;
       }
       
       if (!quantity || quantity <= 0) {
-        alert('请输入有效的购买数量');
+        alert('Please enter a valid quantity');
         return;
       }
       
       try {
         // 获取股票ID
-        console.log('选择的股票代码:', selectedStock);
+        console.log('Selected stock code:', selectedStock);
         const stockId = await getStockIdBySymbol(selectedStock);
-        console.log('获取的股票ID:', stockId);
+        console.log('Retrieved stock ID:', stockId);
         
         if (!stockId) {
-          throw new Error('无法获取股票ID');
+          throw new Error('Unable to get stock ID');
         }
         
         // 发送购买请求
@@ -288,18 +288,18 @@ async function showPurchaseDialog() {
     });
     
   } catch (error) {
-    console.error('获取股票列表失败:', error);
+    console.error('Failed to get stock list:', error);
     dialog.innerHTML = `
       <div class="purchase-dialog-content">
         <div class="purchase-dialog-header">
-          <h3>错误</h3>
+          <h3>Error</h3>
           <button class="close-button">&times;</button>
         </div>
         <div class="purchase-dialog-body">
-          <p>获取股票列表失败，请稍后重试。</p>
+          <p>Failed to get stock list. Please try again later.</p>
         </div>
         <div class="purchase-dialog-footer">
-          <button class="cancel-button">关闭</button>
+          <button class="cancel-button">Close</button>
         </div>
       </div>
     `;
