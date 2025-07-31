@@ -1233,7 +1233,7 @@ button {
 }
 
 .login-error {
-  color: var(--negative);
+  color: var(--positive);
   font-size: 0.85rem;
   margin-bottom: 15px;
   min-height: 20px;
