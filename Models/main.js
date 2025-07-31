@@ -365,13 +365,13 @@ function drawKLineChart(productId) {
   // 原语言切换功能已移除
   
   // Create new project button click event - Future backend API integration for adding new projects
-  const addNewItemButton = document.querySelector('.add-new-item');
-  if (addNewItemButton) {
-    addNewItemButton.addEventListener('click', () => {
-      // Add logic for opening new project form or dialog here
-      alert('Add new project feature coming soon!');
-    });
-  }
+  // const addNewItemButton = document.querySelector('.add-new-item');
+  // if (addNewItemButton) {
+  //   addNewItemButton.addEventListener('click', () => {
+  //     // Add logic for opening new project form or dialog here
+  //     alert('Add new project feature coming soon!');
+  //   });
+  // }
   
   
   // Refresh portfolio button click event
