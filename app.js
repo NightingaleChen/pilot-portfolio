@@ -6,7 +6,7 @@ const authRoutes = require('./Routes/authRoutes');
 
 // Import routes
 const routes = require('./Routes/route');
-const dataserverRoutes = require('./Models/dataserver'); // 导入dataserver路由模块
+// 删除不存在的模块引用
 
 // Create Express application
 const app = express();
@@ -44,9 +44,9 @@ app.use('/css', express.static(path.join(__dirname, 'Views/css')));
 
 
 // 使用路由
-app.use('/api/data', dataserverRoutes); // 使用dataserver路由
+// 删除对不存在模块的使用
 app.use('/api', routes);
-
+// 删除重复的路由注册
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Views', 'index.html'));
